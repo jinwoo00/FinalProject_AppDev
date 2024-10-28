@@ -3,8 +3,8 @@
       <header>
         <img src="@/assets/munhi_logo.png" alt="School Logo" class="school-logo" />
         <nav class="nav-top-right">
-          <a href="#login">Login</a>
-          <a href="#register">Register</a>
+          <a href="/login">Login</a>
+          <a href="/register">Register</a>
         </nav>
       </header>
       <main>
