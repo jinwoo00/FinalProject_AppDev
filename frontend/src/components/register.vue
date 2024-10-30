@@ -97,7 +97,7 @@ export default {
 }
 
 .register-container {
-  background: rgba(255, 255, 255, 0.9); /* Light form background */
+  background: rgb(255, 255, 255); /* Light form background */
   padding: 20px;
   border-radius: 10px;
   text-align: left;
