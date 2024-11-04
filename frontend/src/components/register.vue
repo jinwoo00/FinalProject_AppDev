@@ -29,6 +29,14 @@
             <input type="text" id="student-id" v-model="studentID" required />
           </div>
           <div class="form-group">
+            <label for="Password">Password.:</label>
+            <input type="text" id="password" v-model="password" required />
+          </div>
+          <div class="form-group">
+            <label for="Confirm Password">Confirm Password.:</label>
+            <input type="text" id="confirmpassword" v-model="confirmpassword" required />
+          </div>
+          <div class="form-group">
             <label for="section">List of Section:</label>
             <select id="section" v-model="section" required>
               <option value="" disabled>Select Section</option>
