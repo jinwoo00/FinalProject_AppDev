@@ -5,10 +5,10 @@
         <img src="@/assets/munhi_logo.png" alt="School Logo" class="school-logo" />
         <form @submit.prevent="handleLogin">
           <div class="form-group">
-            <label for="username">Username</label>
+            <label for="email">Email</label>
             <div class="input-icon">
               <i class="fas fa-user"></i>
-              <input type="text" id="username" v-model="username" placeholder="Username" required />
+              <input type="text" id="email" v-model="username" placeholder="Email" required />
             </div>
           </div>
           <div class="form-group">
