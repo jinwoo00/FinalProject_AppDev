@@ -43,7 +43,7 @@ export default {
     handleLogin() {
       if (this.username === 'admin' && this.password === 'password') {
         alert('Login successful!');
-        this.$router.push('/');
+        this.$router.push('/admin');
       } else {
         this.loginError = 'Invalid username or password.';
       }
