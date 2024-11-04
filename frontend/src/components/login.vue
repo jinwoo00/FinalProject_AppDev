@@ -40,18 +40,22 @@ export default {
     };
   },
   methods: {
-    handleLogin() {
-      if (this.username === 'admin' && this.password === 'password') {
-        alert('Login successful!');
-        this.$router.push('/admin');
-      } else {
-        this.loginError = 'Invalid username or password.';
-      }
-    },
-    handleRegister() {
-      this.$router.push('/register');
-    },
+  handleLogin() {
+    if (this.username === 'admin' && this.password === 'password') {
+      alert('Admin login successful!');
+      this.$router.push('/admin'); // Redirect to the admin page
+    } else if (this.username === 'user' && this.password === 'userpassword') {
+      alert('User login successful!');
+      this.$router.push('/user'); // Redirect to a user-specific page
+    } else {
+      this.loginError = 'Invalid username or password.';
+    }
   },
+  handleRegister() {
+    this.$router.push('/register');
+  },
+},
+
 };
 </script>
 
