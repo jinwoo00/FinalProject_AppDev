@@ -10,7 +10,9 @@
       <h2>User Menu</h2>
       <ul>
         <li><a href="UserProf">Profile</a></li>
-        <li><a href="#">Settings</a></li>
+        <li><a href="Counseling">Counseling</a></li>
+        <li><a href="#">Monitoring</a></li>
+        <li><a href="#">Scheduling</a></li>
         <li><a href="#">Logout</a></li>
         <li><button class="hide-button" @click="toggleSidebar">Hide Menu</button></li>
       </ul>
