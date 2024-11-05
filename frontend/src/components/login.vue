@@ -1,3 +1,4 @@
+// LoginPage.vue
 <template>
   <div id="login-page">
     <main>
@@ -30,6 +31,9 @@
 </template>
 
 <script>
+import { auth, db } from '../firebaseConfig';
+import { doc, getDoc } from "firebase/firestore";
+
 export default {
   name: 'LoginPage',
   data() {
@@ -40,15 +44,30 @@ export default {
     };
   },
   methods: {
-    handleLogin() {
-      if (this.username === 'admin' && this.password === 'password') {
-        alert('Login successful!');
-        this.$router.push('/');
-      } else {
-        this.loginError = 'Invalid username or password.';
+    async handleLogin() {
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(this.username, this.password);
+        const userId = userCredential.user.uid;
+
+        // Fetch user role from Firestore
+        const userDoc = await getDoc(doc(db, "users", userId));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          if (userData.role === 'admin') {
+            this.$router.push('/admin-dashboard');
+          } else {
+            this.$router.push('/');
+          }
+        } else {
+          this.loginError = 'User data not found. Please contact support.';
+        }
+      } catch (error) {
+        this.loginError = 'Invalid email or password.';
+        console.error('Login error:', error);
       }
     },
     handleRegister() {
+      // Navigate to the registration page
       this.$router.push('/register');
     },
   },

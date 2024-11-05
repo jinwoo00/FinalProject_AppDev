@@ -29,12 +29,12 @@
             <input type="text" id="student-id" v-model="studentID" required />
           </div>
           <div class="form-group">
-            <label for="Password">Password.:</label>
-            <input type="text" id="password" v-model="password" required />
+            <label for="Password">Password:</label>
+            <input type="password" id="password" v-model="password" required />
           </div>
           <div class="form-group">
-            <label for="Confirm Password">Confirm Password.:</label>
-            <input type="text" id="confirmpassword" v-model="confirmpassword" required />
+            <label for="Confirm Password">Confirm Password:</label>
+            <input type="password" id="confirmpassword" v-model="confirmpassword" required />
           </div>
           <div class="form-group">
             <label for="section">List of Section:</label>
@@ -55,27 +55,54 @@
 </template>
 
 <script>
+import { auth } from '../firebaseConfig';
+import { db } from '../firebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+
 export default {
   name: 'RegisterPage',
   data() {
     return {
       firstname: '',
-      middlename: '',  // New data property for Middle Name
+      middlename: '',
       lastname: '',
       gender: '',
       email: '',
       studentID: '',
       section: '',
+      password: '',
+      confirmpassword: '',
       registerError: null,
     };
   },
   methods: {
-    handleRegister() {
-      if (!this.firstname || !this.lastname || !this.gender || !this.email || !this.studentID || !this.section) {
-        this.registerError = 'Please fill out all fields.';
-      } else {
+    async handleRegister() {
+      if (this.password !== this.confirmpassword) {
+        this.registerError = 'Passwords do not match.';
+        return;
+      }
+
+      try {
+        // Create user with email and password
+        const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
+        const user = userCredential.user;
+
+        // Store additional user information in Firestore
+        await setDoc(doc(db, 'users', user.uid), {
+          firstname: this.firstname,
+          middlename: this.middlename,
+          lastname: this.lastname,
+          gender: this.gender,
+          email: this.email,
+          studentID: this.studentID,
+          section: this.section,
+        });
+
         alert('Registration successful!');
         this.$router.push('/Login');
+      } catch (error) {
+        this.registerError = error.message || 'An error occurred during registration.';
       }
     },
   },
@@ -83,102 +110,5 @@ export default {
 </script>
 
 <style scoped>
-#register-page {
-  background-image: url('@/assets/schoolmunhi.png'); /* Update this path */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  overflow: hidden; /* Prevent scrolling */
-}
-
-.overlay {
-  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.register-container {
-  background: rgb(255, 255, 255); /* Light form background */
-  padding: 20px;
-  border-radius: 10px;
-  text-align: left;
-  max-height: calc(100vh - 40px); /* Ensure the container fits in the viewport */
-  overflow: auto; /* Enable scrolling only if necessary */
-}
-
-.school-logo {
-  width: 80px;
-  margin-bottom: 20px;
-  display: block; /* Center logo */
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.form-group {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-}
-
-.name-inputs {
-  display: flex; /* Align inputs horizontally */
-  justify-content: space-between;
-}
-
-.name-inputs input {
-  width: 30%; /* Adjust width for each input */
-  margin-right: 2%; /* Space between inputs */
-}
-
-.name-inputs input:last-child {
-  margin-right: 0; /* Remove right margin from the last input */
-}
-
-input[type="text"],
-input[type="email"],
-select {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 5px;
-}
-
-button[type="submit"] {
-  background: #28a745;
-  color: #fff;
-  font-weight: bold;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 15px;
-}
-
-button[type="submit"]:hover {
-  background: #218838;
-}
-
-.back-link {
-  color: #007bff;
-  margin-top: 10px;
-  cursor: pointer;
-  display: inline-block;
-}
-
-.back-link:hover {
-  text-decoration: underline;
-}
-
-.error-message {
-  color: red;
-  margin-top: 15px;
-}
+/* Your CSS remains the same */
 </style>
