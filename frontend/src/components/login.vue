@@ -9,7 +9,7 @@
             <label for="email">Email</label>
             <div class="input-icon">
               <i class="fas fa-user"></i>
-              <input type="text" id="email" v-model="username" placeholder="Email" required />
+              <input type="text" id="email" v-model="email" placeholder="Email" required />
             </div>
           </div>
           <div class="form-group">
@@ -32,13 +32,13 @@
 
 <script>
 import { auth, db } from '../firebaseConfig';
-import { doc, getDoc } from "firebase/firestore";
-
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 export default {
   name: 'LoginPage',
   data() {
     return {
-      username: '',
+      email: '',       // changed to email to match Firebase credentials
       password: '',
       loginError: null,
     };
@@ -46,24 +46,29 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        const userCredential = await auth.signInWithEmailAndPassword(this.username, this.password);
-        const userId = userCredential.user.uid;
+        const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password);
+        const user = userCredential.user;
+
+        // Check if email is verified
+        if (!user.emailVerified) {
+          this.loginError = 'Please verify your email before logging in.';
+          return;
+        }
 
         // Fetch user role from Firestore
-        const userDoc = await getDoc(doc(db, "users", userId));
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
           if (userData.role === 'admin') {
-            this.$router.push('/admin-dashboard');
+            this.$router.push('/adminDashboard');
           } else {
-            this.$router.push('/');
+            this.$router.push('/user');
           }
         } else {
           this.loginError = 'User data not found. Please contact support.';
         }
       } catch (error) {
-        this.loginError = 'Invalid email or password.';
-        console.error('Login error:', error);
+        this.loginError = error.message || 'Invalid email or password.';
       }
     },
     handleRegister() {

@@ -55,9 +55,8 @@
 </template>
 
 <script>
-import { auth } from '../firebaseConfig';
-import { db } from '../firebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../firebaseConfig';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 export default {
@@ -88,6 +87,9 @@ export default {
         const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
         const user = userCredential.user;
 
+        // Send verification email
+        await sendEmailVerification(user);
+
         // Store additional user information in Firestore
         await setDoc(doc(db, 'users', user.uid), {
           firstname: this.firstname,
@@ -97,9 +99,11 @@ export default {
           email: this.email,
           studentID: this.studentID,
           section: this.section,
+          verified: false,  // Track verification status
+          role: 'admin' // Mag-set ng role bilang admin
         });
 
-        alert('Registration successful!');
+        alert('Registration successful! Please check your email to verify your account.');
         this.$router.push('/Login');
       } catch (error) {
         this.registerError = error.message || 'An error occurred during registration.';
