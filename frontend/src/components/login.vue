@@ -129,7 +129,7 @@ export default {
 
 .login-container {
   background: rgba(255, 255, 255, 0.85); /* Transparent background */
-  padding: 20px;
+  padding: 40px;
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   width: 90%;
@@ -138,7 +138,7 @@ export default {
 }
 
 .school-logo {
-  width: 60px; /* Reduced logo size to fit better */
+  width: 130px; /* Reduced logo size to fit better */
   margin-bottom: 20px;
 }
 
@@ -168,7 +168,7 @@ label {
 
 .input-icon input {
   width: 100%;
-  padding: 10px 10px 10px 35px; /* Padding for icon space */
+  padding: 10px 10px 10px 60px; /* Padding for icon space */
   border-radius: 5px;
   border: 1px solid #ccc;
   margin-top: 5px;
