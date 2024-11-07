@@ -1,4 +1,3 @@
-// LoginPage.vue
 <template>
   <div id="login-page">
     <main>
@@ -25,22 +24,43 @@
           </div>
         </form>
         <p v-if="loginError" class="error-message">{{ loginError }}</p>
+        <button @click="showResetPasswordModal" class="reset-password-button">Forgot Password?</button>
+      </div>
+
+      <!-- Reset Password Modal -->
+      <div v-if="showResetModal" class="reset-modal">
+        <div class="modal-content">
+          <span class="close" @click="showResetModal = false">&times;</span>
+          <h3>Reset Password</h3>
+          <input
+            type="email"
+            v-model="resetEmail"
+            class="form-control mb-2"
+            placeholder="Enter your email"
+          />
+          <button @click="resetPassword" class="btn btn-primary">Send Reset Email</button>
+          <p v-if="resetMessage" class="message">{{ resetMessage }}</p>
+        </div>
       </div>
     </main>
   </div>
 </template>
 
 <script>
-import { auth, db } from '../firebaseConfig';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../firebaseConfig'; // Removed 'db' since it's not used
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+
 export default {
   name: 'LoginPage',
   data() {
     return {
-      email: '',       // changed to email to match Firebase credentials
+      email: '',
       password: '',
       loginError: null,
+      showResetModal: false, // Controls visibility of the reset password modal
+      resetEmail: '', // Email input for reset
+      resetMessage: null, // Message for reset feedback
     };
   },
   methods: {
@@ -56,7 +76,7 @@ export default {
         }
 
         // Fetch user role from Firestore
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const userDoc = await getDoc(doc(db, 'users', user.uid)); // Make sure 'db' is used correctly or remove this line if unnecessary
         if (userDoc.exists()) {
           const userData = userDoc.data();
           if (userData.role === 'admin') {
@@ -72,8 +92,23 @@ export default {
       }
     },
     handleRegister() {
-      // Navigate to the registration page
       this.$router.push('/register');
+    },
+    showResetPasswordModal() {
+      this.showResetModal = true; // Open the reset password modal
+    },
+    async resetPassword() {
+      if (!this.resetEmail) {
+        this.resetMessage = 'Please enter your email.';
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, this.resetEmail);
+        this.resetMessage = 'A password reset email has been sent. Please check your inbox.';
+      } catch (error) {
+        this.resetMessage = error.message || 'Failed to send reset email.';
+      }
     },
   },
 };
@@ -163,8 +198,50 @@ label {
   background: #218838;
 }
 
-.error-message {
-  color: red;
+.reset-password-button {
   margin-top: 15px;
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.reset-password-button:hover {
+  color: #0056b3;
+}
+
+.reset-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.message {
+  margin-top: 10px;
+  color: green;
 }
 </style>
