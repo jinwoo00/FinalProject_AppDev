@@ -100,7 +100,6 @@ export default {
           studentID: this.studentID,
           section: this.section,
           verified: false,  // Track verification status
-          role: 'admin' // Mag-set ng role bilang admin
         });
 
         alert('Registration successful! Please check your email to verify your account.');
@@ -115,4 +114,95 @@ export default {
 
 <style scoped>
 /* Your CSS remains the same */
+.school-logo {
+  width: 80px; /* Adjust the size as needed to fit within the form */
+  margin-bottom: 20px;
+}
+
+#register-page {
+  background-image: url('@/assets/schoolmunhi.png'); /* Corrected path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+.register-container {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 30px; /* Increased padding for better spacing */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 600px; /* Increased maximum width */
+  text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  color: #333;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+button {
+  background: #28a745;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background: #218838;
+}
+.back-link {
+  margin-top: 15px;
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.back-link:hover {
+  color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 15px;
+}
+.name-inputs {
+  display: flex;
+  gap: 10px; /* Adds space between the input fields */
+}
+
+.name-inputs input {
+  flex: 1; /* Ensures equal width for all input fields within the container */
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
 </style>

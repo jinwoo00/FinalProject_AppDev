@@ -1,25 +1,45 @@
 <template>
   <div class="user-page">
-    <!-- Toggle Button for Sidebar (Hamburger Icon) -->
-    <button v-if="!sidebarVisible" class="toggle-button" @click="toggleSidebar">
-      <span class="hamburger-icon"></span>
-    </button>
-
-    <!-- Sidebar Navbar -->
-    <nav :class="['sidebar', { visible: sidebarVisible }]">
-      <h2>User Menu</h2>
-      <ul>
-        <li><a href="UserProf">Profile</a></li>
-        <li><a href="Counseling">Counseling</a></li>
-        <li><a href="#">Monitoring</a></li>
-        <li><a href="#">Scheduling</a></li>
-        <li><a href="#">Logout</a></li>
-        <li><button class="hide-button" @click="toggleSidebar">Hide Menu</button></li>
-      </ul>
+    <!-- Navbar Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
     </nav>
 
     <!-- Main Content -->
-    <main :class="['content', { 'content-shift': sidebarVisible }]">
+    <main class="content">
       <section class="profile-section">
         <h1>Welcome, {{ user.name }}</h1>
         <p>Email: {{ user.email }}</p>
@@ -34,9 +54,6 @@
         </label>
       </section>
     </main>
-
-    <!-- Logo Image -->
-    <img src="@/assets/munhi_logo.png" alt="Logo" class="logo" />
   </div>
 </template>
 
@@ -45,7 +62,6 @@ export default {
   name: 'UserPage',
   data() {
     return {
-      sidebarVisible: false,
       user: {
         name: 'John Doe',
         email: 'john@example.com',
@@ -54,120 +70,31 @@ export default {
       notifications: true,
     };
   },
-  methods: {
-    toggleSidebar() {
-      this.sidebarVisible = !this.sidebarVisible;
-    },
-  },
 };
 </script>
 
 <style scoped>
+/* Navbar styling */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Page container styling */
 .user-page {
   display: flex;
+  flex-direction: column;
   height: 100vh;
   background-color: rgb(200, 194, 194);
   color: black;
-  position: relative;
+  padding-top: 56px; /* Adjust padding-top to match navbar height */
 }
 
-.user-page::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8); /* Slight overlay to make the background less prominent */
-  z-index: -1;
-}
-
-.toggle-button {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-}
-
-.hamburger-icon {
-  width: 25px;
-  height: 3px;
-  background-color: black;
-  position: relative;
-}
-
-.hamburger-icon::before,
-.hamburger-icon::after {
-  content: '';
-  width: 25px;
-  height: 3px;
-  background-color: black;
-  position: absolute;
-  left: 0;
-}
-
-.hamburger-icon::before {
-  top: -8px;
-}
-
-.hamburger-icon::after {
-  top: 8px;
-}
-
-.sidebar {
-  width: 200px;
-  background-color: #f0f0f0;
-  padding: 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  color: black;
-}
-
-.sidebar.visible {
-  transform: translateX(0);
-}
-
-.sidebar h2 {
-  color: black;
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-.sidebar ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin: 10px 0;
-}
-
-.sidebar ul li a {
-  color: black;
-  text-decoration: none;
-}
-
-.hide-button {
-  background-color: rgba(255, 0, 0, 0.7);
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
-}
-
+/* Main content styling */
 .content {
   flex-grow: 1;
   display: flex;
@@ -176,11 +103,6 @@ export default {
   justify-content: center;
   padding: 20px;
   color: black;
-  transition: margin-left 0.3s ease;
-}
-
-.content-shift {
-  margin-left: 200px;
 }
 
 .profile-section,
