@@ -115,7 +115,7 @@ export default {
 <style scoped>
 /* Your CSS remains the same */
 .school-logo {
-  width: 80px; /* Adjust the size as needed to fit within the form */
+  width: 150px; /* Adjust the size as needed to fit within the form */
   margin-bottom: 20px;
 }
 

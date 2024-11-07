@@ -103,7 +103,7 @@ export default {
 }
 
 .school-logo {
-  width: 60px; /* Reduced logo size to fit better */
+  width: 130px; /* Reduced logo size to fit better */
   margin-bottom: 20px;
 }
 
