@@ -133,7 +133,7 @@ export default {
 
 .register-container {
   background: rgba(255, 255, 255, 0.85);
-  padding: 30px; /* Increased padding for better spacing */
+  padding: 40px; /* Increased padding for better spacing */
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   width: 90%;

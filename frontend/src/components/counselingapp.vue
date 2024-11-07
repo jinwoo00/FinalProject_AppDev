@@ -66,7 +66,7 @@
         alert(`Appointment booked for ${slot.time}`);
         // Here you would also send an email notification or update the backend
       },
-      // Saving session notes
+      // Saving session notes 
       saveNotes() {
         alert('Notes saved successfully');
         // Send session notes to a backend for secure storage
