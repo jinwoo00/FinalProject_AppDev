@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
     "core-js": "^3.8.3",
     "firebase": "^11.0.1",
     "firebased": "^0.0.6",
