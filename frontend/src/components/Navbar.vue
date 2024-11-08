@@ -117,8 +117,9 @@
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Logout</a>
+              <a class="nav-link" href="#" @click.prevent="confirmLogout">Logout</a>
             </li>
+
           </ul>
         </div>
       </div>
@@ -126,8 +127,28 @@
   </template>
   
   <script>
+  import { auth } from '../firebaseConfig'; // Adjust path as necessary
 export default {
   name: 'AppNavbar',
+  methods: {
+  async confirmLogout() {
+    // Show a confirmation dialog before logging out
+    const userConfirmed = window.confirm('Are you sure you want to logout?');
+    if (userConfirmed) {
+      await this.handleLogout();
+    }
+  },
+  async handleLogout() {
+    try {
+      await auth.signOut(); // Ensure 'auth' is properly imported from your firebase config
+      this.$router.push('/login'); // Adjust the route as necessary
+      alert('You have been logged out successfully.');
+    } catch (error) {
+      console.error('Logout error:', error);
+      alert('An error occurred while logging out. Please try again.');
+    }
+  }
+}
 };
 </script>
 
