@@ -1,7 +1,12 @@
 <template>
-  <div class="admin-dashboard d-flex">
+  <div class="admin-dashboard">
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger-btn" @click="toggleSidebar">
+      &#9776;
+    </button>
+
     <!-- Sidebar -->
-    <nav class="sidebar bg-light border-end">
+    <nav v-if="isSidebarVisible" class="sidebar bg-light border-end">
       <div class="p-4">
         <h2 class="h5">Admin Menu</h2>
         <ul class="list-group">
@@ -43,120 +48,43 @@
 
       <!-- Add Student Tab -->
       <div v-if="activeTab === 'addStudent'">
-        <h3>Add Student</h3>
-        <div class="mb-3">
-          <input
-            type="text"
-            v-model="studentName"
-            class="form-control mb-2"
-            placeholder="Student Name"
-          />
-          <input
-            type="email"
-            v-model="studentEmail"
-            class="form-control mb-2"
-            placeholder="Student Email"
-          />
-          <button class="btn btn-success" @click="addStudent">Add Student</button>
-        </div>
-        <p v-if="addMessage" class="text-success">{{ addMessage }}</p>
+        <AddStudent />
       </div>
 
       <!-- User Registrations Tab -->
       <div v-if="activeTab === 'userRegistrations'">
-        <h3>User Registrations</h3>
-        <div v-if="users.length === 0" class="alert alert-info">
-          No users registered.
-        </div>
-        <table v-else class="table table-striped">
-          <thead>
-            <tr>
-              <th>User ID</th>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="user in users" :key="user.id">
-              <td>{{ user.id }}</td>
-              <td>{{ user.firstname }} {{ user.lastname }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.status }}</td>
-              <td>
-                <button class="btn btn-outline-success btn-sm" @click="approveUser(user.id)">
-                  Approve
-                </button>
-                <button class="btn btn-outline-danger btn-sm" @click="declineUser(user.id)">
-                  Decline
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <UserRegistrations />
       </div>
 
-      <!-- Manage Appointments -->
+      <!-- Manage Appointments Tab -->
       <div v-if="activeTab === 'manageAppointments'">
-        <h3>Manage Appointments</h3>
-        <div v-if="appointments.length === 0" class="alert alert-warning">
-          No appointments to display.
-        </div>
-        <table v-else class="table table-striped">
-          <thead>
-            <tr>
-              <th>Appointment ID</th>
-              <th>Student</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="appointment in appointments" :key="appointment.id">
-              <td>{{ appointment.id }}</td>
-              <td>{{ appointment.studentName }}</td>
-              <td>{{ appointment.date }}</td>
-              <td>{{ appointment.status }}</td>
-              <td>
-                <button class="btn btn-outline-success btn-sm" @click="approveAppointment()">
-                  Approve
-                </button>
-                <button class="btn btn-outline-danger btn-sm" @click="declineAppointment()">
-                  Decline
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <ManageAppointment @appointmentUpdated="handleAppointmentUpdate" />
       </div>
 
-      <!-- Additional Tabs Here... -->
+      <!-- Additional content for other tabs can go here -->
     </div>
   </div>
 </template>
 
 <script>
-import { setUserRole } from '../adminService';
-import { db } from '../firebaseConfig';
-import { doc, setDoc, collection, getDocs, updateDoc } from 'firebase/firestore';
+import AddStudent from './AddStudent.vue'; // Import the AddStudent component
+import UserRegistrations from './UserRegistrations.vue'; // Import the UserRegistrations component
+import ManageAppointment from './ManageAppointment.vue'; // Import the ManageAppointment component
 
 export default {
   name: 'AdminDashboard',
+  components: {
+    AddStudent,
+    UserRegistrations, // Register the UserRegistrations component
+    ManageAppointment, // Register the ManageAppointment component
+  },
   data() {
     return {
+      isSidebarVisible: false,
+      activeTab: 'setRole',
       userId: '',
       role: 'user',
-      studentName: '',
-      studentEmail: '',
       message: '',
-      addMessage: '',
-      activeTab: 'setRole',
-      users: [],
-      appointments: [],
-      moodLogs: [],
-      feedbacks: [],
       tabs: [
         { value: 'setRole', label: 'Set User Role' },
         { value: 'addStudent', label: 'Add Student' },
@@ -171,79 +99,48 @@ export default {
     };
   },
   methods: {
-    async fetchUsers() {
-      const usersCollection = collection(db, 'users');
-      const snapshot = await getDocs(usersCollection);
-      this.users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    },
-    async updateRole() {
-      try {
-        await setUserRole(this.userId, this.role);
-        this.message = `Role updated to ${this.role} successfully!`;
-      } catch (error) {
-        this.message = 'Failed to update role.';
-      }
-    },
-    async addStudent() {
-      try {
-        const studentId = this.studentEmail.split('@')[0];
-        await setDoc(doc(db, 'students', studentId), {
-          name: this.studentName,
-          email: this.studentEmail,
-        });
-        this.addMessage = 'Student added successfully!';
-      } catch (error) {
-        this.addMessage = 'Failed to add student.';
-      }
-    },
-    async approveUser(userId) {
-      const userRef = doc(db, 'users', userId);
-      await updateDoc(userRef, { status: 'approved' });
-      this.message = `User ${userId} approved successfully!`;
-      this.fetchUsers();
-    },
-    async declineUser(userId) {
-      const userRef = doc(db, 'users', userId);
-      await updateDoc(userRef, { status: 'declined' });
-      this.message = `User ${userId} declined successfully!`;
-      this.fetchUsers();
+    toggleSidebar() {
+      this.isSidebarVisible = !this.isSidebarVisible;
     },
     setActiveTab(tab) {
       this.activeTab = tab;
-      this.message = '';
-      this.addMessage = '';
-      if (tab === 'userRegistrations') {
-        this.fetchUsers();
-      } else if (tab === 'manageAppointments') {
-        this.fetchAppointments();
-      } else if (tab === 'viewMoodLogs') {
-        this.fetchMoodLogs();
-      } else if (tab === 'feedbackManagement') {
-        this.fetchFeedbacks();
-      }
+      this.isSidebarVisible = false; // Close sidebar on tab selection
     },
-    async fetchAppointments() {},
-    async fetchMoodLogs() {},
-    async fetchFeedbacks() {},
-    approveAppointment() {},
-    declineAppointment() {},
-    viewFeedback() {},
-  },
-  mounted() {
-    this.fetchUsers();
+    updateRole() {
+      // Example of updating user role
+      this.message = `Role updated to ${this.role} for User ID: ${this.userId}`;
+    },
+    handleAppointmentUpdate(action) {
+      // Handle the action, e.g., refresh data, show a notification, etc.
+      console.log(`Appointment was ${action}`);
+    },
   },
 };
 </script>
 
 <style scoped>
 .admin-dashboard {
+  display: flex;
   height: 100vh;
+}
+
+.hamburger-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
 }
 
 .sidebar {
   width: 250px;
   height: 100%;
   overflow-y: auto;
+  transition: transform 0.3s ease;
+  background-color: #f8f9fa;
 }
 
 .list-group-item.active {
