@@ -136,11 +136,13 @@ export default {
   max-width: 350px; /* Constrain maximum width */
   text-align: center;
 }
-
 .school-logo {
-  width: 130px; /* Reduced logo size to fit better */
-  margin-bottom: 20px;
+  width: 140px; /* Reduced logo size to fit better */
+  margin: 0 auto; /* This centers the logo horizontally */
+  display: block; /* Ensures that the logo is treated as a block element for centering */
+  margin-bottom: 20px; /* Keeps the bottom margin as it is */
 }
+
 
 .form-group {
   margin-bottom: 15px;
@@ -202,7 +204,7 @@ label {
   margin-top: 15px;
   background: none;
   border: none;
-  color: #007bff;
+  color: #0c8d35;
   cursor: pointer;
   text-decoration: underline;
 }
