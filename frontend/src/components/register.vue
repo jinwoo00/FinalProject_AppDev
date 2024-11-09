@@ -212,80 +212,129 @@ export default {
 
 
 <style scoped>
-#register-page {
-  background-color: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  padding: 0;
-  margin: 0;
-}
-
-.card {
-  display: flex;
-  border-radius: 15px;
-  overflow: hidden;
-}
-.form-label {
-  font-weight: 600;
-}
-
-button {
-  margin-top: 10px;
-}
+/* General Body Styling */
 body, html {
   margin: 0;
   padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #fcfffd, #e3f8ff); /* Soft gradient */
+  color: #000000;
 }
+
+/* Styling the fixed navbar */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #e1f7df, #10451b);
   padding: 10px 15px;
+ 
 }
 
 .navbar-brand-container {
-  display: flex;
+  display:inline-flexbox;
   align-items: center;
+
 }
 
 .navbar-brand {
   display: flex;
   align-items: center;
+  text-transform: uppercase;
 }
 
 .logo-img {
-  width: 40px;
+  width: 70px;
   height: auto;
-  margin-right: 10px;
+  margin-right: 15px;
 }
 
 .school-name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.navbar-toggler {
+
+/* Register Page Layout */
+#register-page {
+  background-color: #f0f8ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 80px; /* Adjusted for space to avoid navbar overlap */
+}
+
+.card {
+  border-radius: 70px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  display: flexbox;
+  color: #000000 !important;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #333;
+}
+
+button {
+  font-weight: bold;
+  background: linear-gradient(135deg, #28a745, #218838); /* Green gradient */
+  border-radius: 20px;
   border: none;
-  padding: 8px 10px;
+  padding: 10px 20px;
+  color: white; /* Text color */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
 }
 
-.navbar-toggler-icon {
-  width: 24px;
-  height: 24px;
+/* Input Fields Styling */
+.form-control, .form-select {
+  border-radius: 10px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  
 }
 
+.form-control:focus, .form-select:focus {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.bg-primary {
+  background-color: #9bd1ad !important; /* Rich blue color */
+  border-radius: 20px 0 0 20px;
+}
+
+.bg-light {
+  background-color: #f7f9fc !important;
+  border-radius: 0 20px 20px 0;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .navbar-brand-container {
-    flex-grow: 1;
     justify-content: space-between;
   }
+
   .school-name {
-    font-size: 16px;
+    font-size: 18px;
   }
+
+  .card {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  #register-page {
+    padding-top: 100px;
+  }
+
 }
 </style>
