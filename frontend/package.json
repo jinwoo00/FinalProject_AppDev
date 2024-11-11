@@ -11,10 +11,12 @@
   "dependencies": {
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.6",
     "core-js": "^3.8.3",
     "firebase": "^11.0.1",
     "firebased": "^0.0.6",
     "vue": "^3.2.13",
+    "vue-chartjs": "^5.3.2",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {

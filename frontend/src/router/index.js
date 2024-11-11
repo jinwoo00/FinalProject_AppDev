@@ -5,7 +5,7 @@ import HelloWorld from '../components/HelloWorld.vue';
 import register from '../components/register.vue';
 import user from '../components/user.vue'; // Example of another page
 import UserProf from '@/components/UserProf.vue';
-import adminDashboard from '../components/adminDashboard.vue';
+import adminDashboard from '@/components/adminDashboard.vue';
 import AddStudent from '@/components/AddStudent.vue';
 import UserRegistration from '@/components/UserRegistrations.vue';
 import ManageAppointment from '@/components/ManageAppointment.vue';

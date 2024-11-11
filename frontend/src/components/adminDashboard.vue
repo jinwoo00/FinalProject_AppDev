@@ -1,187 +1,280 @@
-<template>
-  <div class="flex h-screen bg-gray-100">
-    <!-- Mobile menu button (Hamburger) -->
-     <!-- Hamburger Button for Mobile -->
-  <div class="md:hidden">
-    <button @click="toggleMenu" class="fixed left-4 top-4 z-50 p-2 text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-      </svg>
-      <span class="sr-only">Open menu</span>
-    </button>
-  </div>
-  <!-- Sidebar (Hidden on mobile, toggled by hamburger) -->
-  <aside :class="{'block': isSidebarOpen, 'hidden': !isSidebarOpen, 'md:block': true}" class="w-64 bg-blue-600 p-4 transition-all duration-300 ease-in-out">
-    <nav class="space-y-4">
-      <button
-        v-for="section in sections"
-        :key="section.name"
-        @click="toggleSection(section.name)"
-        class="w-full justify-start text-white hover:bg-blue-700 px-4 py-2 rounded"
-      >
-        {{ section.label }}
-      </button>
-    </nav>
-  </aside>
-
-    <!-- Main content -->
-    <main class="flex-1 overflow-auto p-6">
-      <h1 class="mb-8 text-center text-3xl font-bold text-blue-600">Admin Dashboard</h1>
-
-      <!-- Appointment Management Section -->
-      <section v-if="activeSection === 'appointments'" class="mb-8 rounded-lg bg-white p-6 shadow-md">
-        <h2 class="mb-4 text-2xl font-semibold text-gray-800">Appointment Management</h2>
-        <div class="overflow-x-auto">
-          <table class="min-w-full bg-white">
-            <thead class="bg-gray-100">
-              <tr>
-                <th v-for="header in appointmentHeaders" :key="header" class="px-4 py-2 text-left">{{ header }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="appointment in appointments" :key="appointment.id" class="border-b">
-                <td class="px-4 py-2">{{ appointment.date }}</td>
-                <td class="px-4 py-2">{{ appointment.time }}</td>
-                <td class="px-4 py-2">{{ appointment.student }}</td>
-                <td class="px-4 py-2">{{ appointment.counselor }}</td>
-                <td class="px-4 py-2">
-                  <span
-                    :class="{
-                      'bg-green-200 text-green-800': appointment.status === 'Confirmed',
-                      'bg-yellow-200 text-yellow-800': appointment.status === 'Pending',
-                      'bg-red-200 text-red-800': appointment.status === 'Cancelled'
-                    }"
-                    class="rounded-full px-2 py-1 text-sm"
-                  >
-                    {{ appointment.status }}
-                  </span>
-                </td>
-                <td class="px-4 py-2">
-                  <button @click="editAppointment(appointment)" class="mr-2 px-3 py-1 bg-blue-500 text-white rounded">Edit</button>
-                  <button @click="cancelAppointment(appointment)" class="px-3 py-1 bg-red-500 text-white rounded">Cancel</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Session Notes Section -->
-      <section v-if="activeSection === 'notes'" class="mb-8 rounded-lg bg-white p-6 shadow-md">
-        <h2 class="mb-4 text-2xl font-semibold text-gray-800">Session Notes</h2>
-        <div class="mb-4">
-          <label for="appointmentSelect" class="mb-2 block text-sm font-medium text-gray-700">Select Appointment</label>
-          <select
-            id="appointmentSelect"
-            v-model="selectedAppointmentId"
-            class="w-full rounded-md border p-2"
-          >
-            <option value="">Select an appointment</option>
-            <option v-for="appointment in appointments" :key="appointment.id" :value="appointment.id">
-              {{ appointment.date }} - {{ appointment.time }} - {{ appointment.student }}
-            </option>
-          </select>
-        </div>
-        <textarea
-          v-model="sessionNotes"
-          placeholder="Enter session notes..."
-          class="h-32 w-full resize-none rounded-md border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        ></textarea>
-        <button @click="saveNotes" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Save Notes</button>
-      </section>
-
-      <!-- Online Counseling Section -->
-      <section v-if="activeSection === 'counseling'" class="rounded-lg bg-white p-6 shadow-md">
-        <h2 class="mb-4 text-2xl font-semibold text-gray-800">Online Counseling</h2>
-        <div class="grid gap-4 md:grid-cols-2">
-          <div>
-            <h3 class="mb-2 text-lg font-medium">Upcoming Online Sessions</h3>
-            <ul class="space-y-2">
-              <li v-for="session in onlineSessions" :key="session.id" class="rounded-md bg-gray-50 p-2">
-                {{ session.date }} - {{ session.time }} - {{ session.student }}
-                <button @click="startSession(session)" class="ml-2 px-3 py-1 bg-blue-500 text-white rounded">Start</button>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="mb-2 text-lg font-medium">Chat Messages</h3>
-            <div class="mb-4 h-64 overflow-y-auto rounded-md bg-gray-50 p-4">
-              <p v-for="message in chatMessages" :key="message.id" class="mb-2">
-                <strong>{{ message.sender }}:</strong> {{ message.text }}
-              </p>
-            </div>
-            <div class="flex">
-              <input
-                v-model="newMessage"
-                @keyup.enter="sendMessage"
-                placeholder="Type a message..."
-                class="flex-grow rounded-l-md border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button @click="sendMessage" class="rounded-r-md bg-blue-500 px-4 py-2 text-white">Send</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-</template>
-
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getAuth, signOut } from 'firebase/auth'
+import { getFirestore, collection, getDocs } from 'firebase/firestore'
+import { Chart, registerables } from 'chart.js'
+import { Bar } from 'vue-chartjs'
+import { ref as firebaseRef, get, child, getDatabase } from 'firebase/database'
 
-const activeSection = ref(null)
-const isSidebarOpen = ref(false)
+Chart.register(...registerables)
 
-const appointments = reactive([/* Your appointment data */])
-const selectedAppointmentId = ref(null)
-const sessionNotes = ref('')
-const onlineSessions = reactive([/* Your online session data */])
-const chatMessages = reactive([/* Your chat messages data */])
-const newMessage = ref('')
+const auth = getAuth()
+const db = getFirestore()
 
-const sections = [
-  { name: 'appointments', label: 'Appointment Management' },
-  { name: 'notes', label: 'Session Notes' },
-  { name: 'counseling', label: 'Online Counseling' },
-]
+const users = ref([])
+const userCounts = ref({ students: 0, counselors: 0, administrators: 0 })
+const moodData = ref({
+  labels: [],
+  datasets: [{
+    label: 'Mood Distribution',
+    data: [],
+    backgroundColor: []
+  }]
+})
+const activeTab = ref('users')
+const snippetContent = ref('')
 
-const appointmentHeaders = ['Date', 'Time', 'Student', 'Counselor', 'Status', 'Actions']
-
-const toggleSection = (section) => {
-  activeSection.value = activeSection.value === section ? null : section
+const fetchUsers = async () => {
+  const usersCollection = collection(db, 'users')
+  const userSnapshot = await getDocs(usersCollection)
+  users.value = userSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+  
+  userCounts.value = users.value.reduce((acc, user) => {
+    acc[user.role]++
+    return acc
+  }, { students: 0, counselors: 0, administrators: 0 })
 }
 
-const toggleMenu = () => {
-  isSidebarOpen.value = !isSidebarOpen.value
-}
-
-const editAppointment = (appointment) => {
-  alert(`Editing appointment for ${appointment.student}`)
-}
-
-const cancelAppointment = (appointment) => {
-  if (confirm(`Are you sure you want to cancel the appointment for ${appointment.student}?`)) {
-    const index = appointments.findIndex(a => a.id === appointment.id)
-    if (index !== -1) appointments.splice(index, 1)
+const fetchMoodData = async () => {
+  try {
+    // Simulated mood data (replace with actual Firebase query)
+    const moodCounts = {
+      'Happy': 30,
+      'Sad': 15,
+      'Stressed': 25,
+      'Anxious': 18,
+      'Neutral': 12
+    }
+    
+    moodData.value = {
+      labels: Object.keys(moodCounts),
+      datasets: [{
+        label: 'Mood Distribution',
+        data: Object.values(moodCounts),
+        backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#F44336', '#9E9E9E']
+      }]
+    }
+  } catch (error) {
+    console.error('Error fetching mood data:', error)
   }
 }
 
-const saveNotes = () => {
-  alert('Session notes saved')
-}
-
-const startSession = (session) => {
-  alert(`Starting session for ${session.student}`)
-}
-
-const sendMessage = () => {
-  if (newMessage.value.trim() !== '') {
-    chatMessages.push({ id: chatMessages.length + 1, sender: 'You', text: newMessage.value })
-    newMessage.value = ''
+const fetchSnippetContent = async () => {
+  const db = getDatabase()
+  const snippetRef = firebaseRef(db, 'snippets/wZrAIGPkoRISSyEzjGKNpUggHLN83R')
+  const snapshot = await get(child(snippetRef, 'content'))
+  if (snapshot.exists()) {
+    snippetContent.value = snapshot.val()
+  } else {
+    console.log('No data available')
   }
 }
+
+const handleLogout = async () => {
+  try {
+    await signOut(auth)
+    // Redirect to login page or handle logout
+  } catch (error) {
+    console.error('Logout failed', error)
+  }
+}
+
+onMounted(() => {
+  fetchUsers()
+  fetchMoodData()
+  fetchSnippetContent()
+})
 </script>
 
-<style scoped>
-/* Add your custom styles here */
-</style>
+<template>
+  <div class="min-h-screen bg-gray-100">
+    <nav class="bg-white shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0 flex items-center">
+              <img class="h-100 w-auto" src="@/assets/munhi_logo.png" alt="Logo" />
+            </div>
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <a @click="activeTab = 'users'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'users' }]">
+                Users
+              </a>
+              <a @click="activeTab = 'analytics'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'analytics' }]">
+                Analytics
+              </a>
+              <a @click="activeTab = 'settings'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'settings' }]">
+                Settings
+              </a>
+              <a @click="activeTab = 'snippet'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'snippet' }]">
+                Snippet
+              </a>
+            </div>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:items-center">
+            <button @click="handleLogout" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <span class="sr-only">Logout</span>
+              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="py-10">
+      <header>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold leading-tight text-gray-900">Admin Dashboard</h1>
+        </div>
+      </header>
+      <main>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div class="px-4 py-8 sm:px-0">
+            <div v-if="activeTab === 'users'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
+              <h2 class="text-xl font-semibold mb-4">User Management</h2>
+              <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                  <div class="p-5">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                        <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                      <div class="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt class="text-sm font-medium text-gray-500 truncate">
+                            Total Students
+                          </dt>
+                          <dd class="text-lg font-medium text-gray-900">
+                            {{ userCounts.students }}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                  <div class="p-5">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                        <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                      </div>
+                      <div class="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt class="text-sm font-medium text-gray-500 truncate">
+                            Total Counselors
+                          </dt>
+                          <dd class="text-lg font-medium text-gray-900">
+                            {{ userCounts.counselors }}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                  <div class="p-5">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                        <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                        </svg>
+                      </div>
+                      <div class="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt class="text-sm font-medium text-gray-500 truncate">
+                            Total Administrators
+                          </dt>
+                          <dd class="text-lg font-medium text-gray-900">
+                            {{ userCounts.administrators }}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="user in users" :key="user.id">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ user.name }}
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-500">{{ user.email }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        {{ user.role }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div v-else-if="activeTab === 'analytics'" class="border-4 border-dashed border-gray-200 rounded-lg h-96">
+              <h2 class="text-xl font-semibold mb-4">Analytics</h2>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow">
+                  <h3 class="text-lg font-medium mb-2">Mood Distribution</h3>
+                  <Bar :data="moodData" :options="{ responsive: true }" />
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                  <h3 class="text-lg font-medium mb-2">System Usage</h3>
+                  <p>Placeholder for system usage statistics</p>
+                </div>
+              </div>
+            </div>
+            <div v-else-if="activeTab === 'settings'" class="border-4 border-dashed border-gray-200 rounded-lg h-96">
+              <h2 class="text-xl font-semibold mb-4">System Settings</h2>
+              <form class="space-y-4">
+                <div>
+                  <label for="chatbot-threshold" class="block text-sm font-medium text-gray-700">Chatbot Escalation Threshold</label>
+                  <input type="number" name="chatbot-threshold" id="chatbot-threshold" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="3">
+                </div>
+                <div>
+                  <label for="session-timeout" class="block text-sm font-medium text-gray-700">Session Timeout (minutes)</label>
+                  <input type="number" name="session-timeout" id="session-timeout" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="30">
+                </div>
+                <div>
+                  <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Save Settings
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div v-else-if="activeTab === 'snippet'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
+              <h2 class="text-xl font-semibold mb-4">Snippet Content</h2>
+              <pre class="whitespace-pre-wrap">{{ snippetContent }}</pre>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</template>
