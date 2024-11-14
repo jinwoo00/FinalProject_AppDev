@@ -1,5 +1,8 @@
 <template>
   <div class="max-w-4xl mx-auto p-6 bg-gray-100 min-h-screen">
+    <button @click="goBack" class="mb-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition duration-300">
+      &larr; Back
+    </button>
     <h1 class="text-3xl font-bold mb-8 text-center text-primary">Book a Counseling Appointment</h1>
 
     <!-- Appointment Booking Form -->
@@ -104,11 +107,23 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { initializeApp } from 'firebase/app'
 import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
-const db = getFirestore()
-const auth = getAuth()
+// Initialize Firebase (replace with your own config)
+const firebaseConfig = {
+  apiKey: "AIzaSyDSUFCnlMEvz5bG0M5pVVccgsOr0MB6uMY",
+  authDomain: "naujanmunicipalhigh-school.firebaseapp.com",
+  projectId: "naujanmunicipalhigh-school",
+  storageBucket: "naujanmunicipalhigh-school.firebasestorage.app",
+  messagingSenderId: "680818173352",
+  appId: "1:680818173352:web:88f19e93b1de7f3250299d",
+  measurementId: "G-3E5MF7JQ3T"
+};
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
+const auth = getAuth(app)
 
 const appointmentDate = ref('')
 const appointmentTime = ref('')
@@ -192,6 +207,10 @@ const bookAppointment = async () => {
   } finally {
     isBooking.value = false
   }
+}
+
+const goBack = () => {
+  window.history.back()
 }
 </script>
 

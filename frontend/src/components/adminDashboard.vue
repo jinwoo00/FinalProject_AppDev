@@ -1,91 +1,3 @@
-<script setup>
-import { ref, onMounted } from 'vue'
-import { getAuth, signOut } from 'firebase/auth'
-import { getFirestore, collection, getDocs } from 'firebase/firestore'
-import { Chart, registerables } from 'chart.js'
-import { Bar } from 'vue-chartjs'
-import { ref as firebaseRef, get, child, getDatabase } from 'firebase/database'
-
-Chart.register(...registerables)
-
-const auth = getAuth()
-const db = getFirestore()
-
-const users = ref([])
-const userCounts = ref({ students: 0, counselors: 0, administrators: 0 })
-const moodData = ref({
-  labels: [],
-  datasets: [{
-    label: 'Mood Distribution',
-    data: [],
-    backgroundColor: []
-  }]
-})
-const activeTab = ref('users')
-const snippetContent = ref('')
-
-const fetchUsers = async () => {
-  const usersCollection = collection(db, 'users')
-  const userSnapshot = await getDocs(usersCollection)
-  users.value = userSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-  
-  userCounts.value = users.value.reduce((acc, user) => {
-    acc[user.role]++
-    return acc
-  }, { students: 0, counselors: 0, administrators: 0 })
-}
-
-const fetchMoodData = async () => {
-  try {
-    // Simulated mood data (replace with actual Firebase query)
-    const moodCounts = {
-      'Happy': 30,
-      'Sad': 15,
-      'Stressed': 25,
-      'Anxious': 18,
-      'Neutral': 12
-    }
-    
-    moodData.value = {
-      labels: Object.keys(moodCounts),
-      datasets: [{
-        label: 'Mood Distribution',
-        data: Object.values(moodCounts),
-        backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#F44336', '#9E9E9E']
-      }]
-    }
-  } catch (error) {
-    console.error('Error fetching mood data:', error)
-  }
-}
-
-const fetchSnippetContent = async () => {
-  const db = getDatabase()
-  const snippetRef = firebaseRef(db, 'snippets/wZrAIGPkoRISSyEzjGKNpUggHLN83R')
-  const snapshot = await get(child(snippetRef, 'content'))
-  if (snapshot.exists()) {
-    snippetContent.value = snapshot.val()
-  } else {
-    console.log('No data available')
-  }
-}
-
-const handleLogout = async () => {
-  try {
-    await signOut(auth)
-    // Redirect to login page or handle logout
-  } catch (error) {
-    console.error('Logout failed', error)
-  }
-}
-
-onMounted(() => {
-  fetchUsers()
-  fetchMoodData()
-  fetchSnippetContent()
-})
-</script>
-
 <template>
   <div class="min-h-screen bg-gray-100">
     <nav class="bg-white shadow-sm">
@@ -236,6 +148,72 @@ onMounted(() => {
                   </tr>
                 </tbody>
               </table>
+              
+              <!-- Booked Appointments Container with Accept/Cancel functionality -->
+              <div class="mt-8 bg-white shadow overflow-hidden sm:rounded-lg">
+                <div class="px-4 py-5 sm:px-6">
+                  <h3 class="text-lg leading-6 font-medium text-gray-900">Booked Appointments</h3>
+                  <p class="mt-1 max-w-2xl text-sm text-gray-500">Latest appointments booked by users</p>
+                </div>
+                <div class="border-t border-gray-200">
+                  <ul v-if="bookedAppointments.length > 0" class="divide-y divide-gray-200">
+                    <li v-for="appointment in bookedAppointments" :key="appointment.id" class="px-4 py-4 sm:px-6">
+                      <div class="flex items-center justify-between">
+                        <p class="text-sm font-medium text-indigo-600 truncate">
+                          {{ appointment.studentName }}
+                        </p>
+                        <div class="ml-2 flex-shrink-0 flex">
+                          <p :class="['px-2 inline-flex text-xs leading-5 font-semibold rounded-full', 
+                            appointment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                            appointment.status === 'accepted' ? 'bg-green-100 text-green-800' : 
+                            'bg-red-100 text-red-800']">
+                            {{ appointment.status }}
+                          </p>
+                        </div>
+                      </div>
+                      <div class="mt-2 sm:flex sm:justify-between">
+                        <div class="sm:flex">
+                          <p class="flex items-center text-sm text-gray-500">
+                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                            </svg>
+                            {{ appointment.date }}
+                          </p>
+                          <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
+                            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12zm1-6a1 1 0 10-2 0v3a1 1 0 102 0V9z" clip-rule="evenodd" />
+                            </svg>
+                            {{ appointment.time }}
+                          </p>
+                        </div>
+                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                          <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                          </svg>
+                          {{ appointment.counselor }}
+                        </div>
+                      </div>
+                      <div class="mt-4 flex justify-end space-x-2">
+                        <button 
+                          v-if="appointment.status === 'pending'"
+                          @click="acceptAppointment(appointment.id)" 
+                          class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                        >
+                          Accept
+                        </button>
+                        <button 
+                          v-if="appointment.status !== 'cancelled'"
+                          @click="cancelAppointment(appointment.id)" 
+                          class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </li>
+                  </ul>
+                  <p v-else class="px-4 py-5 sm:px-6 text-sm text-gray-500">No appointments booked yet.</p>
+                </div>
+              </div>
             </div>
             <div v-else-if="activeTab === 'analytics'" class="border-4 border-dashed border-gray-200 rounded-lg h-96">
               <h2 class="text-xl font-semibold mb-4">Analytics</h2>
@@ -278,3 +256,153 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { getAuth, signOut } from 'firebase/auth'
+import { getFirestore, collection, getDocs, query, orderBy, limit, doc, updateDoc } from 'firebase/firestore'
+import { Chart, registerables } from 'chart.js'
+import { Bar } from 'vue-chartjs'
+import { ref as firebaseRef, get, child, getDatabase } from 'firebase/database'
+
+Chart.register(...registerables)
+
+const auth = getAuth()
+const db = getFirestore()
+
+const users = ref([])
+const userCounts = ref({ students: 0, counselors: 0, administrators: 0 })
+const moodData = ref({
+  labels: [],
+  datasets: [{
+    label: 'Mood Distribution',
+    data: [],
+    backgroundColor: []
+  }]
+})
+const activeTab = ref('users')
+const snippetContent = ref('')
+const bookedAppointments = ref([])
+
+const fetchUsers = async () => {
+  const usersCollection = collection(db, 'users')
+  const userSnapshot = await getDocs(usersCollection)
+  users.value = userSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+  
+  userCounts.value = users.value.reduce((acc, user) => {
+    acc[user.role]++
+    return acc
+  }, { students: 0, counselors: 0, administrators: 0 })
+}
+
+const fetchMoodData = async () => {
+  try {
+    // Simulated mood data (replace with actual Firebase query)
+    const moodCounts = {
+      'Happy': 30,
+      'Sad': 15,
+      'Stressed': 25,
+      'Anxious': 18,
+      'Neutral': 12
+    }
+    
+    moodData.value = {
+      labels: Object.keys(moodCounts),
+      datasets: [{
+        label: 'Mood Distribution',
+        data: Object.values(moodCounts),
+        backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#F44336', '#9E9E9E']
+      }]
+    }
+  } catch (error) {
+    console.error('Error fetching mood data:', error)
+  }
+}
+
+const fetchSnippetContent = async () => {
+  const db = getDatabase()
+  const snippetRef = firebaseRef(db, 'snippets/wZrAIGPkoRISSyEzjGKNpUggHLN83R')
+  const snapshot = await get(child(snippetRef, 'content'))
+  if (snapshot.exists()) {
+    snippetContent.value = snapshot.val()
+  } else {
+    console.log('No data available')
+  }
+}
+
+const fetchBookedAppointments = async () => {
+  const appointmentsCollection = collection(db, 'appointments')
+  const appointmentsQuery = query(appointmentsCollection, orderBy('createdAt', 'desc'), limit(5))
+  const appointmentSnapshot = await getDocs(appointmentsQuery)
+  bookedAppointments.value = appointmentSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+}
+
+const acceptAppointment = async (appointmentId) => {
+  try {
+    const appointmentRef = doc(db, 'appointments', appointmentId)
+    await updateDoc(appointmentRef, {
+      status: 'accepted'
+    })
+    await fetchBookedAppointments() // Refresh the appointments list
+  } catch (error) {
+    console.error('Error accepting appointment:', error)
+  }
+}
+
+const cancelAppointment = async (appointmentId) => {
+  try {
+    const appointmentRef = doc(db, 'appointments', appointmentId)
+    await updateDoc(appointmentRef, {
+      status: 'cancelled'
+    })
+    await fetchBookedAppointments() // Refresh the appointments list
+  } catch (error) {
+    console.error('Error cancelling appointment:', error)
+  }
+}
+
+const handleLogout = async () => {
+  try {
+    await signOut(auth)
+    // Redirect to login page or handle logout
+  } catch (error) {
+    console.error('Logout failed', error)
+  }
+}
+
+onMounted(() => {
+  fetchUsers()
+  fetchMoodData()
+  fetchSnippetContent()
+  fetchBookedAppointments()
+})
+</script>
+
+<style scoped>
+@import 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';
+
+:root {
+  --color-primary: #3490dc;
+  --color-primary-dark: #2779bd;
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.hover\:bg-primary-dark:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.focus\:border-primary:focus {
+  border-color: var(--color-primary);
+}
+
+.focus\:ring-primary:focus {
+  --tw-ring-color: var(--color-primary);
+}
+</style>

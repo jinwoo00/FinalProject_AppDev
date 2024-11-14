@@ -9,7 +9,7 @@
             <span class="text-lg font-semibold text-gray-900">MUNHI</span>
           </div>
           <router-link 
-            to="/dashboard" 
+            to="/AdminDashboard" 
             class="text-gray-500 hover:text-gray-900 text-sm font-medium"
             active-class="text-gray-900"
           >
@@ -34,7 +34,7 @@
             <transition name="fade">
               <div v-if="dropdowns.appointments" class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                 <div class="py-1">
-                  <router-link to="/counseling" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Schedule Counseling</router-link>
+                  <router-link to="/CounselingApp" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Schedule Counseling</router-link>
                   <router-link to="/appointments/history" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View History</router-link>
                 </div>
               </div>
