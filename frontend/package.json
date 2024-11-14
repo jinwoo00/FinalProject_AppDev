@@ -15,6 +15,7 @@
     "core-js": "^3.8.3",
     "firebase": "^11.0.1",
     "firebased": "^0.0.6",
+    "lucide-vue-next": "^0.456.0",
     "vue": "^3.2.13",
     "vue-chartjs": "^5.3.2",
     "vue-router": "^4.4.5"
