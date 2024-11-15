@@ -229,7 +229,7 @@ body, html {
   width: 100%;
   z-index: 1000;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, #e1f7df, #10451b);
+  background: linear-gradient(135deg, gray, gray);
   padding: 10px 15px;
  
 }
@@ -308,7 +308,7 @@ button {
 }
 
 .bg-primary {
-  background-color: #9bd1ad !important; /* Rich blue color */
+  background-color: #218838 !important; /* Rich blue color */
   border-radius: 20px 0 0 20px;
 }
 
