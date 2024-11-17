@@ -229,7 +229,7 @@ body, html {
   width: 100%;
   z-index: 1000;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, white, gray);
+  background: linear-gradient(135deg, white, white);
   padding: 10px 15px;
  
 }
@@ -255,7 +255,7 @@ body, html {
 .school-name {
   font-size: 20px;
   font-weight: bold;
-  color: white;
+  color: black;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
