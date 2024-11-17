@@ -229,7 +229,7 @@ body, html {
   width: 100%;
   z-index: 1000;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, gray, gray);
+  background: linear-gradient(135deg, white, gray);
   padding: 10px 15px;
  
 }
