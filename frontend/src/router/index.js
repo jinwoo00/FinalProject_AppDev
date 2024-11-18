@@ -13,6 +13,7 @@ import UserRegistration from '@/components/UserRegistrations.vue';
 import ManageAppointment from '@/components/ManageAppointment.vue';
 import CounselingApp from '@/components/CounselingPage.vue';
 import MoodLogs from '@/components/MoodLogs.vue';
+import EventCalendar from '@/components/EventCalendar.vue';
   // Correct the name if needed
 
 
@@ -31,7 +32,9 @@ const routes = [
   { path: '/UserRegistration', component: UserRegistration, name: 'UserRegistration'},
   { path: '/ManageAppointment', component: ManageAppointment, name: 'ManageAppointment'},
   { path: '/CounselingApp', component: CounselingApp, name: 'CounselingApp'},
-  { path: '/Moodlogs', component: MoodLogs, name: MoodLogs}
+  { path: '/Moodlogs', component: MoodLogs, name: MoodLogs},
+  { path: '/EventCalendar', component: EventCalendar, name: EventCalendar},
+  
 ];
 
 const router = createRouter({

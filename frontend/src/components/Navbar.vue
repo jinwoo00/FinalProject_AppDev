@@ -11,23 +11,25 @@
             <div class="ml-10 flex items-baseline space-x-4">
               <router-link 
                 to="/students" 
-                class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium no-underline"
+                class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium no-underline relative"
                 active-class="text-gray-900 bg-gray-100"
               >
                 Home
+                <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/students' }"></div>
               </router-link>
 
               <!-- Appointments Dropdown -->
               <div class="relative">
                 <button 
                   @click="toggleDropdown('appointments')" 
-                  class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center no-underline"
-                  :class="{ 'text-gray-900 bg-gray-100': dropdowns.appointments }"
+                  class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center no-underline relative"
+                  :class="{ 'text-gray-900 bg-gray-100': dropdowns.appointments || $route.path.includes('/CounselingApp') || $route.path.includes('/ManageAppointment') }"
                 >
                   <span>Appointments</span>
                   <svg class="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                   </svg>
+                  <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path.includes('/CounselingApp') || $route.path.includes('/ManageAppointment') }"></div>
                 </button>
                 <transition name="fade">
                   <div v-if="dropdowns.appointments" class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10">
@@ -43,13 +45,14 @@
               <div class="relative">
                 <button 
                   @click="toggleDropdown('mood')" 
-                  class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center no-underline"
-                  :class="{ 'text-gray-900 bg-gray-100': dropdowns.mood }"
+                  class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center no-underline relative"
+                  :class="{ 'text-gray-900 bg-gray-100': dropdowns.mood || $route.path.includes('/MoodLogs') || $route.path.includes('/mood-journal') }"
                 >
                   <span>Mood Tracker</span>
                   <svg class="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                   </svg>
+                  <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path.includes('/MoodLogs') || $route.path.includes('/mood-journal') }"></div>
                 </button>
                 <transition name="fade">
                   <div v-if="dropdowns.mood" class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10">
@@ -63,10 +66,11 @@
 
               <router-link 
                 to="/community" 
-                class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium no-underline"
+                class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium no-underline relative"
                 active-class="text-gray-900 bg-gray-100"
               >
                 Community
+                <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/community' }"></div>
               </router-link>
             </div>
           </div>
@@ -81,7 +85,7 @@
             </svg>
           </router-link>
 
-          <router-link to="/calendar" class="text-gray-400 hover:text-gray-500 p-2 no-underline">
+          <router-link to="/EventCalendar" class="text-gray-400 hover:text-gray-500 p-2 no-underline">
             <span class="sr-only">View calendar</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -136,20 +140,23 @@
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
         <router-link 
           to="/students" 
-          class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium no-underline"
+          class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium no-underline relative"
           active-class="text-gray-900 bg-gray-100"
         >
           Home
+          <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/students' }"></div>
         </router-link>
-        <a @click="toggleMobileDropdown('appointments')" class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium cursor-pointer no-underline">
+        <a @click="toggleMobileDropdown('appointments')" class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium cursor-pointer no-underline relative">
           Appointments
+          <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path.includes('/CounselingApp') || $route.path.includes('/ManageAppointment') }"></div>
           <div v-if="mobileDropdowns.appointments" class="pl-4 mt-2 space-y-1">
             <router-link to="/CounselingApp" class="block px-3 py-2 rounded-md text-sm text-gray-500 hover:text-gray-900 no-underline">Schedule Counseling</router-link>
             <router-link to="/ManageAppointment" class="block px-3 py-2 rounded-md text-sm text-gray-500 hover:text-gray-900 no-underline">View History</router-link>
           </div>
         </a>
-        <a @click="toggleMobileDropdown('mood')" class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium cursor-pointer no-underline">
+        <a @click="toggleMobileDropdown('mood')" class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium cursor-pointer no-underline relative">
           Mood Tracker
+          <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path.includes('/MoodLogs') || $route.path.includes('/mood-journal') }"></div>
           <div v-if="mobileDropdowns.mood" class="pl-4 mt-2 space-y-1">
             <router-link to="/MoodLogs" class="block px-3 py-2 rounded-md text-sm text-gray-500 hover:text-gray-900 no-underline">Log Mood</router-link>
             <router-link to="/mood-journal" class="block px-3 py-2 rounded-md text-sm text-gray-500 hover:text-gray-900 no-underline">Mood Journal</router-link>
@@ -157,10 +164,11 @@
         </a>
         <router-link 
           to="/community" 
-          class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium no-underline"
+          class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium no-underline relative"
           active-class="text-gray-900 bg-gray-100"
         >
           Community
+          <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/community' }"></div>
         </router-link>
       </div>
     </div>

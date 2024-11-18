@@ -46,7 +46,7 @@
   <script setup>
   import { ref, computed, onMounted } from 'vue'
   import { collection, query, where, getDocs } from 'firebase/firestore'
-  import { db, auth } from './firebaseConfig'
+  import { db, auth } from '../firebaseConfig'
   import Navbar from './Navbar.vue'
   import Footer from './Footer.vue'
   
