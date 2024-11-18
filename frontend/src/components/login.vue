@@ -82,7 +82,7 @@ export default {
           if (userData.role === 'admin') {
             this.$router.push('/adminDashboard');
           } else {
-            this.$router.push('/user');
+            this.$router.push('/students');
           }
         } else {
           this.loginError = 'User data not found. Please contact support.';

@@ -1,107 +1,110 @@
 <template>
-  <div class="max-w-4xl mx-auto p-6 bg-gray-100 min-h-screen">
-    <button @click="goBack" class="mb-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition duration-300">
-      &larr; Back
-    </button>
-    <h1 class="text-3xl font-bold mb-8 text-center text-primary">Book a Counseling Appointment</h1>
+  <div class="flex flex-col min-h-screen">
+    <Navbar :currentPage="'appointments'" />
+    <div class="flex-grow">
+      <div class="max-w-4xl mx-auto p-8 bg-gray-50">
+        <h1 class="text-3xl font-bold mb-8 text-center text-primary">Book a Counseling Appointment</h1>
 
-    <!-- Appointment Booking Form -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-      <h2 class="text-2xl font-semibold mb-4 text-gray-800">Book Your Appointment</h2>
-      <form @submit.prevent="bookAppointment" class="space-y-4">
-        <div>
-          <label for="appointmentDate" class="block text-sm font-medium text-gray-700">Date</label>
-          <input 
-            id="appointmentDate" 
-            v-model="appointmentDate" 
-            type="date" 
-            required 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          />
+        <!-- Appointment Booking Form -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+          <h2 class="text-2xl font-semibold mb-4 text-gray-800">Book Your Appointment</h2>
+          <form @submit.prevent="bookAppointment" class="space-y-4">
+            <div>
+              <label for="appointmentDate" class="block text-sm font-medium text-gray-700">Date</label>
+              <input 
+                id="appointmentDate" 
+                v-model="appointmentDate" 
+                type="date" 
+                required 
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label for="appointmentTime" class="block text-sm font-medium text-gray-700">Time</label>
+              <input 
+                id="appointmentTime" 
+                v-model="appointmentTime" 
+                type="time" 
+                required 
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label for="counselorName" class="block text-sm font-medium text-gray-700">Counselor Name</label>
+              <input 
+                id="counselorName" 
+                v-model="counselorName" 
+                type="text" 
+                required 
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label for="studentName" class="block text-sm font-medium text-gray-700">Your Name</label>
+              <input 
+                id="studentName" 
+                v-model="studentName" 
+                required 
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label for="studentEmail" class="block text-sm font-medium text-gray-700">Your Email</label>
+              <input 
+                id="studentEmail" 
+                v-model="studentEmail" 
+                type="email" 
+                required 
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label for="studentPhone" class="block text-sm font-medium text-gray-700">Your Phone</label>
+              <input 
+                id="studentPhone" 
+                v-model="studentPhone" 
+                type="tel" 
+                required 
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label for="appointmentReason" class="block text-sm font-medium text-gray-700">Reason for Appointment</label>
+              <textarea 
+                id="appointmentReason" 
+                v-model="appointmentReason" 
+                required 
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+              ></textarea>
+            </div>
+            <div class="flex justify-end">
+              <button 
+                type="submit" 
+                class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300"
+                :disabled="isBooking"
+              >
+                {{ isBooking ? 'Booking...' : 'Book Appointment' }}
+              </button>
+            </div>
+          </form>
         </div>
-        <div>
-          <label for="appointmentTime" class="block text-sm font-medium text-gray-700">Time</label>
-          <input 
-            id="appointmentTime" 
-            v-model="appointmentTime" 
-            type="time" 
-            required 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label for="counselorName" class="block text-sm font-medium text-gray-700">Counselor Name</label>
-          <input 
-            id="counselorName" 
-            v-model="counselorName" 
-            type="text" 
-            required 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label for="studentName" class="block text-sm font-medium text-gray-700">Your Name</label>
-          <input 
-            id="studentName" 
-            v-model="studentName" 
-            required 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label for="studentEmail" class="block text-sm font-medium text-gray-700">Your Email</label>
-          <input 
-            id="studentEmail" 
-            v-model="studentEmail" 
-            type="email" 
-            required 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label for="studentPhone" class="block text-sm font-medium text-gray-700">Your Phone</label>
-          <input 
-            id="studentPhone" 
-            v-model="studentPhone" 
-            type="tel" 
-            required 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label for="appointmentReason" class="block text-sm font-medium text-gray-700">Reason for Appointment</label>
-          <textarea 
-            id="appointmentReason" 
-            v-model="appointmentReason" 
-            required 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-          ></textarea>
-        </div>
-        <div class="flex justify-end">
-          <button 
-            type="submit" 
-            class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300"
-            :disabled="isBooking"
-          >
-            {{ isBooking ? 'Booking...' : 'Book Appointment' }}
-          </button>
-        </div>
-      </form>
-    </div>
 
-    <!-- Booked Appointments -->
-    <div v-if="bookedAppointments.length > 0" class="bg-white rounded-lg shadow-md p-6">
-      <h2 class="text-2xl font-semibold mb-4 text-gray-800">Your Booked Appointments</h2>
-      <ul class="space-y-4">
-        <li v-for="appointment in bookedAppointments" :key="appointment.id" class="bg-gray-50 p-4 rounded-md">
-          <p><strong>Date:</strong> {{ appointment.date }}</p>
-          <p><strong>Time:</strong> {{ appointment.time }}</p>
-          <p><strong>Counselor:</strong> {{ appointment.counselor }}</p>
-          <p><strong>Reason:</strong> {{ appointment.reason }}</p>
-          <p><strong>Status:</strong> {{ appointment.status }}</p>
-        </li>
-      </ul>
+        <!-- Booked Appointments -->
+        <div v-if="bookedAppointments.length > 0" class="bg-white rounded-lg shadow-lg p-8">
+          <h2 class="text-2xl font-semibold mb-4 text-gray-800">Your Booked Appointments</h2>
+          <ul class="space-y-4">
+            <li v-for="appointment in bookedAppointments" :key="appointment.id" class="bg-gray-50 p-4 rounded-md">
+              <p><strong>Date:</strong> {{ appointment.date }}</p>
+              <p><strong>Time:</strong> {{ appointment.time }}</p>
+              <p><strong>Counselor:</strong> {{ appointment.counselor }}</p>
+              <p><strong>Reason:</strong> {{ appointment.reason }}</p>
+              <p><strong>Status:</strong> {{ appointment.status }}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+    <Footer />
   </div>
 </template>
 
@@ -110,6 +113,8 @@ import { ref, onMounted } from 'vue'
 import { initializeApp } from 'firebase/app'
 import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import Navbar from './Navbar.vue'
+import Footer from './Footer.vue'
 
 // Initialize Firebase (replace with your own config)
 const firebaseConfig = {
@@ -207,10 +212,6 @@ const bookAppointment = async () => {
   } finally {
     isBooking.value = false
   }
-}
-
-const goBack = () => {
-  window.history.back()
 }
 </script>
 
