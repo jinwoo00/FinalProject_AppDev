@@ -1,114 +1,101 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <div class="container-fluid">
-      <!-- Left-aligned logo and name -->
-      <div class="navbar-brand-container">
-        <a class="navbar-brand" href="/user">
-          <img src="@/assets/munhi_logo.png" alt="School Logo" class="d-inline-block align-text-center logo-img">
+  <div class="register-page">
+    <nav class="navbar">
+      <div class="container">
+        <div class="navbar-brand">
+          <img src="@/assets/munhi_logo.png" alt="School Logo" class="logo-img">
           <span class="school-name">NAUJAN MUNICIPAL HIGH-SCHOOL</span>
-        </a>
+        </div>
+        <button @click="handleRegisterClick" class="btn-register">Register</button>
       </div>
-      <!-- Right-aligned register button -->
-      <div class="d-flex ms-auto">
-        <button @click="handleRegisterClick" class="btn btn-primary">Register</button>
-      </div>
-    </div>
-  </nav>
-  <div id="register-page" class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="card shadow p-4 w-100" style="max-width: 900px; display: flex; border-radius: 15px;">
-      <div class="row">
-        <!-- General Information -->
-        <div class="col-md-6 bg-white p-4" style="border-radius: 15px 0 0 15px;">
-          <h5 class="text-primary">General Information</h5>
+    </nav>
+    <div class="register-form-container">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Student Registration</h2>
           <form @submit.prevent="handleRegister">
-            <div class="mb-3">
-              <label for="student-name" class="form-label">Student Name:</label>
-              <div class="row g-2">
-                <div class="col-4">
-                  <input type="text" id="firstname" placeholder="First name" v-model="firstname" class="form-control" required />
-                  <small v-if="showWarnings && !firstname" class="text-danger">required.</small>
+            <!-- General Information -->
+            <div class="form-section">
+              <h3>General Information</h3>
+              <div class="form-group">
+                <label for="student-name">Student Name:</label>
+                <div class="name-inputs">
+                  <input type="text" id="firstname" v-model="firstname" placeholder="First name" required>
+                  <input type="text" id="middlename" v-model="middlename" placeholder="Middle name">
+                  <input type="text" id="lastname" v-model="lastname" placeholder="Last name" required>
                 </div>
-                <div class="col-4">
-                  <input type="text" id="middlename" placeholder="Middle name" v-model="middlename" class="form-control" />
-                  <!-- Middle name is optional; no required attribute -->
-                </div>
-                <div class="col-4">
-                  <input type="text" id="lastname" placeholder="Last name" v-model="lastname" class="form-control" required />
-                  <small v-if="showWarnings && !lastname" class="text-danger">required.</small>
-                </div>
+                <small v-if="showWarnings && !firstname" class="text-danger">First name is required.</small>
+                <small v-if="showWarnings && !lastname" class="text-danger">Last name is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" v-model="dob" required>
+                <small v-if="showWarnings && !dob" class="text-danger">Date of birth is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" v-model="gender" required>
+                  <option value="" disabled>Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <small v-if="showWarnings && !gender" class="text-danger">Gender is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" v-model="email" required>
+                <small v-if="showWarnings && !email" class="text-danger">Email is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="student-id">ID No.:</label>
+                <input type="text" id="student-id" v-model="studentID" required>
+                <small v-if="showWarnings && !studentID" class="text-danger">ID is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="section">List of Section:</label>
+                <select id="section" v-model="section" required>
+                  <option value="" disabled>Select Section</option>
+                  <option value="section1">Section 1</option>
+                  <option value="section2">Section 2</option>
+                </select>
+                <small v-if="showWarnings && !section" class="text-danger">Section is required.</small>
               </div>
             </div>
-            <div class="mb-3">
-              <label for="dob" class="form-label">Date of Birth:</label>
-              <input type="date" id="dob" v-model="dob" class="form-control" required />
-              <small v-if="showWarnings && !dob" class="text-danger">required.</small>
-            </div>
-            <div class="mb-3">
-              <label for="gender" class="form-label">Gender:</label>
-              <select id="gender" v-model="gender" class="form-select" required>
-                <option value="" disabled>Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-              <small v-if="showWarnings && !gender" class="text-danger">required.</small>
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">E-mail:</label>
-              <input type="email" id="email" v-model="email" class="form-control" required />
-              <small v-if="showWarnings && !email" class="text-danger">required.</small>
-            </div>
-            <div class="mb-3">
-              <label for="student-id" class="form-label">ID No.:</label>
-              <input type="text" id="student-id" v-model="studentID" class="form-control" required />
-              <small v-if="showWarnings && !studentID" class="text-danger">required.</small>
-            </div>
-            <div class="mb-3">
-              <label for="section" class="form-label">List of Section:</label>
-              <select id="section" v-model="section" class="form-select" required>
-                <option value="" disabled>Select Section</option>
-                <option value="section1">Section 1</option>
-                <option value="section2">Section 2</option>
-              </select>
-              <small v-if="showWarnings && !section" class="text-danger">required.</small>
-            </div>
-          </form>
-        </div>
-        
-        <!-- Contact Details -->
-        <div class="col-md-6 bg-primary text-white p-4" style="border-radius: 0 15px 15px 0;">
-          <h5>Contact Details</h5>
-          <form @submit.prevent="handleRegister">
-            <div class="mb-3">
-              <label for="contact" class="form-label">Contact Number:</label>
-              <input type="tel" id="contact" v-model="contact" class="form-control" required />
-              <small v-if="showWarnings && !contact" class="text-danger">required.</small>
-            </div>
-            <div class="mb-3">
-              <label for="address" class="form-label">Address:</label>
-              <input type="text" id="address" v-model="address" class="form-control" required />
-              <small v-if="showWarnings && !address" class="text-danger">required.</small>
-            </div>
-            <div class="mb-3">
-              <label for="guardian-name" class="form-label">Guardian's Name:</label>
-              <input type="text" id="guardian-name" v-model="guardianName" class="form-control" required />
-              <small v-if="showWarnings && !guardianName" class="text-danger">required.</small>
-            </div>
-            <div class="mb-3">
-              <label for="guardian-contact" class="form-label">Guardian's Contact Number:</label>
-              <input type="tel" id="guardian-contact" v-model="guardianContact" class="form-control" required />
-              <small v-if="showWarnings && !guardianContact" class="text-danger">required.</small>
-            </div>
             
-            <div class="mb-3">
-              <label for="password" class="form-label">Password:</label>
-              <input type="password" id="password" v-model="password" class="form-control" required />
-              <small v-if="showWarnings && !password" class="text-danger">Password is required.</small>
-            </div>
-            <div class="mb-3">
-              <label for="confirmpassword" class="form-label">Confirm Password:</label>
-              <input type="password" id="confirmpassword" v-model="confirmpassword" class="form-control" required />
-              <small v-if="showWarnings && password !== confirmpassword" class="text-danger">Passwords do not match.</small>
+            <!-- Contact Details -->
+            <div class="form-section contact-details">
+              <h3>Contact Details</h3>
+              <div class="form-group">
+                <label for="contact">Contact Number:</label>
+                <input type="tel" id="contact" v-model="contact" required>
+                <small v-if="showWarnings && !contact" class="text-danger">Contact number is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" v-model="address" required>
+                <small v-if="showWarnings && !address" class="text-danger">Address is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="guardian-name">Guardian's Name:</label>
+                <input type="text" id="guardian-name" v-model="guardianName" required>
+                <small v-if="showWarnings && !guardianName" class="text-danger">Guardian's name is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="guardian-contact">Guardian's Contact Number:</label>
+                <input type="tel" id="guardian-contact" v-model="guardianContact" required>
+                <small v-if="showWarnings && !guardianContact" class="text-danger">Guardian's contact is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" v-model="password" required>
+                <small v-if="showWarnings && !password" class="text-danger">Password is required.</small>
+              </div>
+              <div class="form-group">
+                <label for="confirmpassword">Confirm Password:</label>
+                <input type="password" id="confirmpassword" v-model="confirmpassword" required>
+                <small v-if="showWarnings && password !== confirmpassword" class="text-danger">Passwords do not match.</small>
+              </div>
             </div>
           </form>
         </div>
@@ -116,8 +103,6 @@
     </div>
   </div>
 </template>
-
-
 
 <script>
 import { auth, db } from '../firebaseConfig';
@@ -129,7 +114,7 @@ export default {
   data() {
     return {
       firstname: '',
-      middlename: '', // New field added
+      middlename: '',
       lastname: '',
       dob: '',
       gender: '',
@@ -165,7 +150,7 @@ export default {
 
         await setDoc(doc(db, 'users', user.uid), {
           firstname: this.firstname,
-          middlename: this.middlename, // Save middlename
+          middlename: this.middlename,
           lastname: this.lastname,
           dob: this.dob,
           gender: this.gender,
@@ -186,7 +171,7 @@ export default {
       }
     },
     handleRegisterClick() {
-      this.handleRegister(); // Trigger the register logic when clicking the button in the navbar
+      this.handleRegister();
     },
     validateForm() {
       return (
@@ -209,132 +194,144 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
-/* General Body Styling */
-body, html {
-  margin: 0;
-  padding: 0;
+.register-page {
   font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #fcfffd, #e3f8ff); /* Soft gradient */
-  color: #000000;
+  background: linear-gradient(135deg, #e6f2f8, #ffffff);
+  min-height: 100vh;
+  padding-bottom: 2rem;
 }
 
-/* Styling the fixed navbar */
 .navbar {
-  position: fixed;
+  background-color: white;
+  padding: 0.5rem 1rem;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  right: 0;
   z-index: 1000;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, white, white);
-  padding: 10px 15px;
- 
 }
 
-.navbar-brand-container {
-  display:inline-flexbox;
+.container {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-
 }
 
 .navbar-brand {
   display: flex;
   align-items: center;
-  text-transform: uppercase;
 }
 
 .logo-img {
-  width: 70px;
+  width: 50px;
   height: auto;
-  margin-right: 15px;
+  margin-right: 0.5rem;
 }
 
 .school-name {
-  font-size: 20px;
-  font-weight: bold;
   color: black;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  font-size: 1rem;
+  font-weight: bold;
 }
 
+.btn-register {
+  background-color: #018749;
+  color: White;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-/* Register Page Layout */
-#register-page {
-  background-color: #f0f8ff;
+.register-form-container {
+  padding-top: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding-top: 80px; /* Adjusted for space to avoid navbar overlap */
 }
 
 .card {
-  border-radius: 70px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   background-color: white;
-  display: flexbox;
-  color: #000000 !important;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  margin: 1rem;
 }
 
-.form-label {
-  font-weight: 600;
+.card-body {
+  padding: 2rem;
+}
+
+.card-title {
+  color: Green;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.form-section h3 {
+  color: black;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
   color: #333;
 }
 
-button {
-  font-weight: bold;
-  background: linear-gradient(135deg, #28a745, #218838); /* Green gradient */
-  border-radius: 20px;
-  border: none;
-  padding: 10px 20px;
-  color: white; /* Text color */
-  transition: background-color 0.3s ease, transform 0.2s ease;
-
+input, select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
-/* Input Fields Styling */
-.form-control, .form-select {
+.name-inputs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.name-inputs input {
+  flex: 1;
+}
+
+.contact-details {
+  background-color: #f0f8ff;
+  padding: 1rem;
   border-radius: 10px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
-  
+}
+.text-danger {
+  color: #dc3545;
+  font-size: 0.875rem;
 }
 
-.form-control:focus, .form-select:focus {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-}
-
-.bg-primary {
-  background-color: #218838 !important; /* Rich blue color */
-  border-radius: 20px 0 0 20px;
-}
-
-.bg-light {
-  background-color: #f7f9fc !important;
-  border-radius: 0 20px 20px 0;
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .navbar-brand-container {
-    justify-content: space-between;
-  }
-
   .school-name {
-    font-size: 18px;
+    font-size: 0.875rem;
   }
 
-  .card {
+  .card-body {
+    padding: 1rem;
+  }
+
+  .name-inputs {
     flex-direction: column;
-    padding: 20px;
   }
 
-  #register-page {
-    padding-top: 100px;
+  .name-inputs input {
+    margin-bottom: 0.5rem;
   }
-
 }
 </style>
