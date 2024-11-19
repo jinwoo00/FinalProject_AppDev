@@ -4,7 +4,7 @@ import FrontPage from '../components/FrontPage.vue';
 import Login from '../components/login.vue';
 import HelloWorld from '../components/HelloWorld.vue';
 import register from '../components/register.vue';
-import user from '../components/students.vue'; // Example of another page
+import students from '../components/students.vue'; // Example of another page
 import UserProf from '@/components/UserProf.vue';
 import adminDashboard from '@/components/Admin/adminDashboard.vue';
 import AdminMoodLogs from '@/components/Admin/AdminMoodLogs.vue';
@@ -24,7 +24,7 @@ const routes = [
   { path: '/hello', component: HelloWorld, name: 'HelloWorld' },
   { path: '/Login', component: Login, name: 'Login' },
   { path: '/register', component: register, name: 'register' },
-  { path: '/students', component: user, name: 'students' },
+  { path: '/students', component: students, name: 'students' },
   { path: '/UserProf', component: UserProf, name: 'profile' },
   { path: '/adminDashboard', component: adminDashboard, name: 'AdminDashboard'},
   { path: '/AdminMoodLogs', component: AdminMoodLogs, name: 'AdminMoodLogs'},

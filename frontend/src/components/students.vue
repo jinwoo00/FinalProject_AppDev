@@ -1,64 +1,125 @@
 <template>
   <div class="user-page">
-    <!-- Import and Use Navbar Component -->
     <Navbar />
 
-    <!-- Main Content -->
     <main class="content">
       <section class="profile-section">
-        <h1>Welcome, {{ user.name }}</h1>
-        <p>Email: {{ user.email }}</p>
-        <p>Member Since: {{ user.memberSince }}</p>
+        <h1>Welcome, {{ student.firstName }} {{ student.lastName }}</h1>
+        <p>Email: {{ student.email }}</p>
+        <p>Member Since: {{ formatDate(student.memberSince) }}</p>
       </section>
 
       <section class="settings-section">
         <h2>Settings</h2>
         <label class="notification-toggle">
-          <input type="checkbox" v-model="notifications" />
+          <input type="checkbox" v-model="notifications" @change="updateNotificationSettings" />
           <span>Enable Notifications</span>
         </label>
       </section>
     </main>
 
-    <!-- Import and Use Footer Component -->
     <AppFooter />
   </div>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
 import Navbar from '@/components/Navbar.vue';
 import AppFooter from '@/components/Footer.vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default {
-  name: 'UserPage',
+  name: 'StudentDashboard',
   components: {
     Navbar,
     AppFooter,
   },
-  data() {
+  setup() {
+    const auth = getAuth();
+    const db = getFirestore();
+
+    const student = ref({
+      firstName: '',
+      lastName: '',
+      email: '',
+      memberSince: null,
+    });
+    const notifications = ref(false);
+
+    onMounted(() => {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          await fetchStudentData(user.uid);
+        } else {
+          // Handle unauthenticated state
+          console.log('User is not authenticated');
+        }
+      });
+    });
+
+    const fetchStudentData = async (userId) => {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          student.value = {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            memberSince: userData.memberSince,
+          };
+          notifications.value = userData.notifications || false;
+        } else {
+          console.log('No such user document!');
+        }
+      } catch (error) {
+        console.error('Error fetching student data:', error);
+      }
+    };
+
+    const updateNotificationSettings = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          await updateDoc(doc(db, 'users', user.uid), {
+            notifications: notifications.value
+          });
+          console.log('Notification settings updated');
+        }
+      } catch (error) {
+        console.error('Error updating notification settings:', error);
+      }
+    };
+
+    const formatDate = (date) => {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    };
+
     return {
-      user: {
-        name: 'John Doe',
-        email: 'john@example.com',
-        memberSince: 'January 2022',
-      },
-      notifications: true,
+      student,
+      notifications,
+      updateNotificationSettings,
+      formatDate,
     };
   },
 };
 </script>
 
 <style scoped>
-/* Page Layout */
 .user-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f9fafb; /* Light background */
-  color: #333; /* Dark text color for readability */
+  background-color: #f9fafb;
+  color: #333;
 }
 
-/* Main Content */
 .content {
   flex-grow: 1;
   display: flex;
@@ -68,13 +129,13 @@ export default {
   padding: 40px;
 }
 
-/* Profile Section */
-.profile-section {
-  background-color: #ffffff; /* White card */
+.profile-section, .settings-section {
+  background-color: #ffffff;
   padding: 20px 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
+  width: 100%;
   text-align: center;
   margin-bottom: 30px;
 }
@@ -82,22 +143,12 @@ export default {
 .profile-section h1 {
   font-size: 2em;
   margin-bottom: 10px;
-  color: #26df26; /* Primary color */
+  color: #26df26;
 }
 
 .profile-section p {
   font-size: 1em;
-  color: #555; /* Gray text for secondary information */
-}
-
-/* Settings Section */
-.settings-section {
-  background-color: #ffffff;
-  padding: 20px 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  text-align: center;
+  color: #555;
 }
 
 .settings-section h2 {
@@ -106,7 +157,6 @@ export default {
   color: #333;
 }
 
-/* Notification Toggle */
 .notification-toggle {
   display: flex;
   align-items: center;
@@ -117,15 +167,6 @@ export default {
 
 .notification-toggle input[type='checkbox'] {
   margin-right: 10px;
-  transform: scale(1.2); /* Slightly larger checkbox */
-}
-
-/* Footer */
-footer {
-  padding: 15px;
-  background-color: #006727;
-  color: #000000;
-  text-align: center;
-  font-size: 0.9em;
+  transform: scale(1.2);
 }
 </style>
