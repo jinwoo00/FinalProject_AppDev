@@ -107,9 +107,9 @@
     <Footer />
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router' // Import Vue Router
 import { initializeApp } from 'firebase/app'
 import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -130,6 +130,7 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 const auth = getAuth(app)
 
+// State variables
 const appointmentDate = ref('')
 const appointmentTime = ref('')
 const counselorName = ref('')
@@ -140,6 +141,9 @@ const appointmentReason = ref('')
 const isBooking = ref(false)
 const bookedAppointments = ref([])
 const currentUser = ref(null)
+
+// Router instance
+const router = useRouter()
 
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
@@ -167,6 +171,7 @@ const fetchBookedAppointments = async () => {
     }))
   } catch (error) {
     console.error('Error fetching booked appointments:', error)
+    alert('Unable to fetch booked appointments. Please try again later.')
   }
 }
 
@@ -194,7 +199,7 @@ const bookAppointment = async () => {
     await addDoc(appointmentsRef, newAppointment)
     
     alert('Appointment booked successfully!')
-    
+
     // Reset form fields
     appointmentDate.value = ''
     appointmentTime.value = ''
@@ -204,8 +209,8 @@ const bookAppointment = async () => {
     studentPhone.value = ''
     appointmentReason.value = ''
 
-    // Refresh booked appointments
-    await fetchBookedAppointments()
+    // Redirect to Appointment Management
+    router.push('/appointment-management')
   } catch (error) {
     console.error("Error booking appointment: ", error)
     alert("Failed to book appointment. Please try again.")
@@ -214,6 +219,8 @@ const bookAppointment = async () => {
   }
 }
 </script>
+
+
 
 <style scoped>
 @import 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css';

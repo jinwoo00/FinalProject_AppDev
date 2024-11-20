@@ -110,7 +110,7 @@
             <transition name="fade">
               <div v-if="dropdowns.profile" class="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10">
                 <div class="py-1">
-                  <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Your Profile</router-link>
+                  <router-link to="/UserProf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Your Profile</router-link>
                   <router-link to="/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Settings</router-link>
                   <router-link to="/help-support" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Help & Support</router-link>
                   <a href="#" @click.prevent="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Sign out</a>
@@ -178,6 +178,9 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { auth, db } from '@/firebaseConfig'
+import { onAuthStateChanged } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 
 export default {
   name: 'StudentNavbar',
@@ -193,7 +196,22 @@ export default {
       mood: false
     })
     const mobileMenuOpen = ref(false)
-    const userAvatar = ref('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80')
+    const userAvatar = ref('')
+
+    const fetchUserAvatar = async (userId) => {
+      try {
+        const docRef = doc(db, 'users', userId)
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists() && docSnap.data().profilePictureUrl) {
+          userAvatar.value = docSnap.data().profilePictureUrl
+        } else {
+          userAvatar.value = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        }
+      } catch (error) {
+        console.error('Error fetching user avatar:', error)
+        userAvatar.value = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      }
+    }
 
     const toggleDropdown = (dropdown) => {
       Object.keys(dropdowns.value).forEach(key => {
@@ -217,6 +235,12 @@ export default {
     }
 
     onMounted(() => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          fetchUserAvatar(user.uid)
+        }
+      })
+
       document.addEventListener('click', (e) => {
         if (!e.target.closest('.relative')) {
           Object.keys(dropdowns.value).forEach(key => {
@@ -234,7 +258,8 @@ export default {
       toggleDropdown,
       toggleMobileDropdown,
       toggleMobileMenu,
-      logout
+      logout,
+      fetchUserAvatar
     }
   }
 }
