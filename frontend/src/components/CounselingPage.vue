@@ -3,11 +3,11 @@
     <Navbar :currentPage="'appointments'" />
     <div class="flex-grow">
       <div class="max-w-4xl mx-auto p-8 bg-gray-50">
-        <h1 class="text-3xl font-bold mb-8 text-center text-primary">Book a Counseling Appointment</h1>
+        <h1 class="text-3xl font-bold mb-8 text-center text-primary">Make an Appointment</h1>
 
         <!-- Appointment Booking Form -->
         <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <h2 class="text-2xl font-semibold mb-4 text-gray-800">Book Your Appointment</h2>
+          <h2 class="text-2xl font-semibold mb-4 text-gray-800">Fill Up the Form</h2>
           <form @submit.prevent="bookAppointment" class="space-y-4">
             <div>
               <label for="appointmentDate" class="block text-sm font-medium text-gray-700">Date</label>
@@ -83,7 +83,7 @@
                 class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition duration-300"
                 :disabled="isBooking"
               >
-                {{ isBooking ? 'Booking...' : 'Book Appointment' }}
+                {{ isBooking ? 'Booking...' : 'Add Counseling' }}
               </button>
             </div>
           </form>
