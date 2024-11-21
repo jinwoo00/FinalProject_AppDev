@@ -14,6 +14,8 @@ import ManageAppointment from '@/components/ManageAppointment.vue';
 import CounselingApp from '@/components/CounselingPage.vue';
 import MoodLogs from '@/components/MoodLogs.vue';
 import EventCalendar from '@/components/EventCalendar.vue';
+import Navbar from '@/components/Navbar.vue';
+import RegisterPage from '@/components/RegisterPage.vue';
   // Correct the name if needed
 
 
@@ -34,6 +36,8 @@ const routes = [
   { path: '/CounselingApp', component: CounselingApp, name: 'CounselingApp'},
   { path: '/Moodlogs', component: MoodLogs, name: MoodLogs},
   { path: '/EventCalendar', component: EventCalendar, name: EventCalendar},
+  { path: '/Navbar', component: Navbar, name: Navbar},
+  { path: '/RegisterPage', component: RegisterPage, name: RegisterPage},
   
 ];
 

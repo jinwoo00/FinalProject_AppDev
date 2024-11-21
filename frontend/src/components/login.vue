@@ -92,7 +92,7 @@ export default {
       }
     },
     handleRegister() {
-      this.$router.push('/register');
+      this.$router.push('/RegisterPage');
     },
     showResetPasswordModal() {
       this.showResetModal = true; // Open the reset password modal
