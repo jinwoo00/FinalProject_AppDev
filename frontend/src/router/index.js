@@ -16,6 +16,7 @@ import MoodLogs from '@/components/MoodLogs.vue';
 import EventCalendar from '@/components/EventCalendar.vue';
 import Navbar from '@/components/Navbar.vue';
 import RegisterPage from '@/components/RegisterPage.vue';
+import UserNotification from '@/components/UserNotification.vue';
   // Correct the name if needed
 
 
@@ -38,6 +39,7 @@ const routes = [
   { path: '/EventCalendar', component: EventCalendar, name: EventCalendar},
   { path: '/Navbar', component: Navbar, name: Navbar},
   { path: '/RegisterPage', component: RegisterPage, name: RegisterPage},
+  { path: '/UserNotification', component: UserNotification, name: UserNotification},
   
 ];
 
