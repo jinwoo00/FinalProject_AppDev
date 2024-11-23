@@ -183,7 +183,7 @@ export default {
 </script>
 
 <style scoped>
-.manage-appointments-page {
+.manage-appointments-page {   
   display: flex;
   flex-direction: column;
   min-height: 100vh;
