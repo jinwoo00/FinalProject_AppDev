@@ -144,7 +144,7 @@
           active-class="text-gray-900 bg-gray-100"
         >
           Home
-          <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/students' }"></div>
+          <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/StudentsDashboard' }"></div>
         </router-link>
         <a @click="toggleMobileDropdown('appointments')" class="text-gray-500 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium cursor-pointer no-underline relative">
           Appointments

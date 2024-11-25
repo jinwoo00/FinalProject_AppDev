@@ -1,195 +1,172 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
-    <nav class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-          <div class="flex">
-            <div class="flex-shrink-0 flex items-center">
-              <GraduationCapIcon class="h-8 w-8 text-indigo-600" />
-              <span class="ml-2 text-xl font-bold text-gray-800">StudentPortal</span>
-            </div>
-          </div>
-          <div class="flex items-center">
-            <button class="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              <BellIcon class="h-6 w-6" />
-            </button>
-            <img class="ml-4 h-8 w-8 rounded-full" src="/placeholder.svg?height=32&width=32" alt="User avatar" />
-          </div>
-        </div>
-      </div>
-    </nav>
+  <div class="user-page">
+    <Navbar />
 
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Welcome, {{ student.name }}</h1>
-        
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Upcoming Classes -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-              <div class="flex items-center">
-                <div class="flex-shrink-0">
-                  <CalendarIcon class="h-6 w-6 text-gray-400" />
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">
-                      Upcoming Classes
-                    </dt>
-                    <dd>
-                      <div class="text-lg font-medium text-gray-900">
-                        {{ upcomingClasses.length }}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gray-50 px-5 py-3">
-              <div class="text-sm">
-                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-                  View all
-                </a>
-              </div>
-            </div>
-          </div>
+    <main class="content">
+      <section class="profile-section">
+        <h1>Welcome, {{ student.firstName }} {{ student.lastName }}</h1>
+        <p>Email: {{ student.email }}</p>
+        <p>Member Since: {{ formatDate(student.memberSince) }}</p>
+      </section>
 
-          <!-- Assignments Due -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-              <div class="flex items-center">
-                <div class="flex-shrink-0">
-                  <ClipboardIcon class="h-6 w-6 text-gray-400" />
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">
-                      Assignments Due
-                    </dt>
-                    <dd>
-                      <div class="text-lg font-medium text-gray-900">
-                        {{ assignmentsDue.length }}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gray-50 px-5 py-3">
-              <div class="text-sm">
-                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-                  View all
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- GPA -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-              <div class="flex items-center">
-                <div class="flex-shrink-0">
-                  <ChartBarIcon class="h-6 w-6 text-gray-400" />
-                </div>
-                <div class="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">
-                      Current GPA
-                    </dt>
-                    <dd>
-                      <div class="text-lg font-medium text-gray-900">
-                        {{ student.gpa }}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-            <div class="bg-gray-50 px-5 py-3">
-              <div class="text-sm">
-                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-                  View details
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Announcements -->
-        <div class="mt-8">
-          <h2 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Announcements</h2>
-          <ul class="divide-y divide-gray-200">
-            <li v-for="announcement in recentAnnouncements" :key="announcement.id" class="py-4">
-              <div class="flex space-x-3">
-                <MegaphoneIcon class="h-6 w-6 text-gray-400" />
-                <div class="flex-1 space-y-1">
-                  <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-medium">{{ announcement.title }}</h3>
-                    <p class="text-sm text-gray-500">{{ announcement.date }}</p>
-                  </div>
-                  <p class="text-sm text-gray-500">{{ announcement.content }}</p>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Quick Links -->
-        <div class="mt-8">
-          <h2 class="text-lg leading-6 font-medium text-gray-900 mb-4">Quick Links</h2>
-          <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            <a v-for="link in quickLinks" :key="link.name" :href="link.href" class="flex items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-              <component :is="link.icon" class="h-6 w-6 text-indigo-600" />
-              <span class="ml-3 text-sm font-medium text-gray-900">{{ link.name }}</span>
-            </a>
-          </div>
-        </div>
-      </div>
+      <section class="settings-section">
+        <h2>Settings</h2>
+        <label class="notification-toggle">
+          <input type="checkbox" v-model="notifications" @change="updateNotificationSettings" />
+          <span>Enable Notifications</span>
+        </label>
+      </section>
     </main>
+
+    <AppFooter />
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import { 
-  GraduationCapIcon, 
-  BellIcon, 
-  CalendarIcon, 
-  ClipboardIcon, 
-  ChartBarIcon,
-  MegaphoneIcon,
-  BookOpenIcon,
-  CreditCardIcon,
-  UserIcon,
-  LibraryIcon
-} from 'lucide-vue-next';
+<script>
+import { ref, onMounted } from 'vue';
+import Navbar from '@/components/Navbar.vue';
+import AppFooter from '@/components/Footer.vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 
-// Mock data
-const student = ref({
-  name: 'John Doe',
-  gpa: 3.75
-});
+export default {
+  name: 'StudentDashboard',
+  components: {
+    Navbar,
+    AppFooter,
+  },
+  setup() {
+    const auth = getAuth();
+    const db = getFirestore();
 
-const upcomingClasses = ref([
-  { id: 1, name: 'Mathematics 101', time: '09:00 AM' },
-  { id: 2, name: 'History 202', time: '11:00 AM' },
-  { id: 3, name: 'Physics 301', time: '02:00 PM' }
-]);
+    const student = ref({
+      firstName: '',
+      lastName: '',
+      email: '',
+      memberSince: null,
+    });
+    const notifications = ref(false);
 
-const assignmentsDue = ref([
-  { id: 1, name: 'Math Homework', dueDate: '2023-06-15' },
-  { id: 2, name: 'History Essay', dueDate: '2023-06-18' }
-]);
+    onMounted(() => {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          await fetchStudentData(user.uid);
+        } else {
+          // Handle unauthenticated state
+          console.log('User is not authenticated');
+        }
+      });
+    });
 
-const recentAnnouncements = ref([
-  { id: 1, title: 'Campus Event', date: '2023-06-10', content: 'Join us for the annual campus festival next week!' },
-  { id: 2, title: 'Library Hours Extended', date: '2023-06-08', content: 'The library will now be open until midnight during exam week.' }
-]);
+    const fetchStudentData = async (userId) => {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          student.value = {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            memberSince: userData.memberSince,
+          };
+          notifications.value = userData.notifications || false;
+        } else {
+          console.log('No such user document!');
+        }
+      } catch (error) {
+        console.error('Error fetching student data:', error);
+      }
+    };
 
-const quickLinks = ref([
-  { name: 'Course Catalog', href: '#', icon: BookOpenIcon },
-  { name: 'Tuition Payment', href: '#', icon: CreditCardIcon },
-  { name: 'Student Profile', href: '#', icon: UserIcon },
-  { name: 'Library Resources', href: '#', icon: LibraryIcon }
-]);
+    const updateNotificationSettings = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          await updateDoc(doc(db, 'users', user.uid), {
+            notifications: notifications.value
+          });
+          console.log('Notification settings updated');
+        }
+      } catch (error) {
+        console.error('Error updating notification settings:', error);
+      }
+    };
+
+    const formatDate = (date) => {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    };
+
+    return {
+      student,
+      notifications,
+      updateNotificationSettings,
+      formatDate,
+    };
+  },
+};
 </script>
+
+<style scoped>
+.user-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  color: #333;
+}
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.profile-section, .settings-section {
+  background-color: #ffffff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profile-section h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #26df26;
+}
+
+.profile-section p {
+  font-size: 1em;
+  color: #555;
+}
+
+.settings-section h2 {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.notification-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  color: #333;
+}
+
+.notification-toggle input[type='checkbox'] {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+</style>
