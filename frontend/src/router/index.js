@@ -18,6 +18,7 @@ import Navbar from '@/components/Navbar.vue';
 import TeacherDashboard from '@/components/TeacherDashboard.vue';
 import UserNotification from '@/components/UserNotification.vue';
 import students from '@/components/students.vue';
+import community from '@/components/CommunityPage.vue';
   // Correct the name if needed
 
 
@@ -41,6 +42,7 @@ const routes = [
   { path: '/Navbar', component: Navbar, name: Navbar},
   { path: '/TeacherDashboard', component: TeacherDashboard, name: TeacherDashboard},
   { path: '/UserNotification', component: UserNotification, name: UserNotification},
+  { path: '/community', component: community, name: community},
   // { path: '/studentdashboard', component: studentsdashboard, name: studentsdashboard},
   
 ];
