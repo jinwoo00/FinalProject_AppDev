@@ -14,11 +14,13 @@ import ManageAppointment from '@/components/ManageAppointment.vue';
 import CounselingApp from '@/components/CounselingPage.vue';
 import MoodLogs from '@/components/MoodLogs.vue';
 import EventCalendar from '@/components/EventCalendar.vue';
-import Navbar from '@/components/Navbar.vue';
+// import Sidebar from '@/components/Navbar.vue';
 // import RegisterPage from '@/components/RegisterPage.vue';
 import UserNotification from '@/components/UserNotification.vue';
 import students from '@/components/students.vue';
 import community from '@/components/CommunityPage.vue';
+import Navbar from '@/components/Navbar.vue';
+// import Sidebar from '@/components/Sidebar.vue';
   // Correct the name if needed
 
 

@@ -10,12 +10,12 @@
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
               <router-link 
-                to="/students" 
+                to="/Students" 
                 class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium no-underline relative"
                 active-class="text-gray-900 bg-gray-100"
               >
                 Home
-                <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/students' }"></div>
+                <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/Students' }"></div>
               </router-link>
 
               <!-- Appointments Dropdown -->
@@ -64,14 +64,14 @@
                 </transition>
               </div>
 
-              <router-link 
-                to="/community" 
-                class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium no-underline relative"
-                active-class="text-gray-900 bg-gray-100"
-              >
-                Community
-                <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/community' }"></div>
-              </router-link>
+             <router-link 
+  to="/community" 
+  class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium no-underline relative"
+  active-class="text-gray-900 bg-gray-100"
+>
+  Community
+  <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transform scale-x-0 transition-transform duration-200 ease-in-out" :class="{ 'scale-x-100': $route.path === '/community' }"></div>
+</router-link>
             </div>
           </div>
         </div>
@@ -191,6 +191,7 @@ export default {
       mood: false,
       profile: false
     })
+    
     const mobileDropdowns = ref({
       appointments: false,
       mood: false
@@ -240,6 +241,8 @@ export default {
           fetchUserAvatar(user.uid)
         }
       })
+
+      
 
       document.addEventListener('click', (e) => {
         if (!e.target.closest('.relative')) {
