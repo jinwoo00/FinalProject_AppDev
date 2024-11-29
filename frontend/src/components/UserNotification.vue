@@ -1,110 +1,68 @@
-<template>
-    <div class="min-h-screen bg-gray-100">
-      <header class="bg-white shadow">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 class="text-3xl font-bold text-gray-900">Notifications</h1>
-        </div>
-      </header>
-      <main>
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div class="px-4 py-6 sm:px-0">
-            <div class="border-4 border-dashed border-gray-200 rounded-lg h-auto">
-              <div class="bg-white shadow overflow-hidden sm:rounded-md">
-                <ul role="list" class="divide-y divide-gray-200">
-                  <li v-for="notification in notifications" :key="notification.id">
-                    <a href="#" class="block hover:bg-gray-50">
-                      <div class="px-4 py-4 sm:px-6">
-                        <div class="flex items-center justify-between">
-                          <p class="text-sm font-medium text-indigo-600 truncate">
-                            {{ notification.title }}
-                          </p>
-                          <div class="ml-2 flex-shrink-0 flex">
-                            <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              {{ notification.status }}
-                            </p>
-                          </div>
-                        </div>
-                        <div class="mt-2 sm:flex sm:justify-between">
-                          <div class="sm:flex">
-                            <p class="flex items-center text-sm text-gray-500">
-                              <CreditCardIcon class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                              {{ notification.amount }}
-                            </p>
-                            <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                              <UserIcon class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                              {{ notification.recipient }}
-                            </p>
-                          </div>
-                          <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                            <ClockIcon class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                            <p>
-                              Completed on <time :datetime="notification.completedAt">{{ formatDate(notification.completedAt) }}</time>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue'
-  import { CreditCardIcon, UserIcon, ClockIcon } from 'lucide-vue-next'
-  
-  // Mock data for notifications
-  const notifications = ref([
-    {
-      id: 1,
-      title: 'Payment to John Doe',
-      status: 'Completed',
-      amount: '$500.00',
-      recipient: 'John Doe',
-      completedAt: '2023-04-15T13:45:30'
-    },
-    {
-      id: 2,
-      title: 'Subscription Renewal',
-      status: 'Completed',
-      amount: '$19.99',
-      recipient: 'Netflix',
-      completedAt: '2023-04-14T09:30:00'
-    },
-    {
-      id: 3,
-      title: 'Online Purchase',
-      status: 'Completed',
-      amount: '$75.50',
-      recipient: 'Amazon',
-      completedAt: '2023-04-13T16:20:15'
-    },
-    {
-      id: 4,
-      title: 'Salary Deposit',
-      status: 'Completed',
-      amount: '$3,500.00',
-      recipient: 'Your Account',
-      completedAt: '2023-04-01T00:05:00'
-    },
-    {
-      id: 5,
-      title: 'Utility Bill Payment',
-      status: 'Completed',
-      amount: '$120.75',
-      recipient: 'Electric Company',
-      completedAt: '2023-03-28T11:15:45'
-    }
-  ])
-  
-  // Function to format date
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
-    return new Date(dateString).toLocaleDateString(undefined, options)
+<script setup>
+import { ref, onMounted } from 'vue'
+import { getAuth } from 'firebase/auth'
+import { getFirestore, collection, query, where, getDocs, orderBy } from 'firebase/firestore'
+
+const db = getFirestore()
+const auth = getAuth()
+
+const notifications = ref([])
+const appointments = ref([])
+
+const fetchNotifications = async () => {
+  const user = auth.currentUser
+  if (user) {
+    const notificationsCollection = collection(db, 'notifications')
+    const q = query(
+      notificationsCollection,
+      where('userId', '==', user.uid),
+      orderBy('createdAt', 'desc')
+    )
+    const notificationsSnapshot = await getDocs(q)
+    notifications.value = notificationsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
   }
-  </script>
+}
+
+const fetchAppointments = async () => {
+  const user = auth.currentUser
+  if (user) {
+    const appointmentsCollection = collection(db, 'appointments')
+    const q = query(
+      appointmentsCollection,
+      where('studentId', '==', user.uid),
+      orderBy('dateTime', 'desc')
+    )
+    const appointmentsSnapshot = await getDocs(q)
+    appointments.value = appointmentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+  }
+}
+
+onMounted(() => {
+  fetchNotifications()
+  fetchAppointments()
+})
+</script>
+
+<template>
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">My Notifications</h1>
+    <div v-if="notifications.length > 0" class="space-y-4">
+      <div v-for="notification in notifications" :key="notification.id" class="bg-white shadow rounded-lg p-4">
+        <h2 class="text-lg font-semibold">{{ notification.title }}</h2>
+        <p class="text-gray-600">{{ notification.message }}</p>
+        <p class="text-sm text-gray-500 mt-2">{{ new Date(notification.createdAt.toDate()).toLocaleString() }}</p>
+      </div>
+    </div>
+    <div v-else class="text-gray-500">No notifications</div>
+
+    <h1 class="text-2xl font-bold mt-8 mb-4">My Appointments</h1>
+    <div v-if="appointments.length > 0" class="space-y-4">
+      <div v-for="appointment in appointments" :key="appointment.id" class="bg-white shadow rounded-lg p-4">
+        <h2 class="text-lg font-semibold">Appointment with {{ appointment.counselorName }}</h2>
+        <p class="text-gray-600">Date: {{ new Date(appointment.dateTime.toDate()).toLocaleString() }}</p>
+        <p class="text-gray-600">Status: {{ appointment.status }}</p>
+      </div>
+    </div>
+    <div v-else class="text-gray-500">No appointments</div>
+  </div>
+</template>

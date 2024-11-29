@@ -4,7 +4,7 @@ import FrontPage from '../components/FrontPage.vue';
 import Login from '../components/login.vue';
 import HelloWorld from '../components/HelloWorld.vue';
 import register from '../components/register.vue';
-import students from '../components/students.vue'; // Example of another page
+// import students from '../components/studentsdashboard.vue'; // Example of another page
 import UserProf from '@/components/UserProf.vue';
 import adminDashboard from '@/components/Admin/adminDashboard.vue';
 import AdminMoodLogs from '@/components/Admin/AdminMoodLogs.vue';
@@ -15,7 +15,9 @@ import CounselingApp from '@/components/CounselingPage.vue';
 import MoodLogs from '@/components/MoodLogs.vue';
 import EventCalendar from '@/components/EventCalendar.vue';
 import Navbar from '@/components/Navbar.vue';
+import RegisterPage from '@/components/RegisterPage.vue';
 import UserNotification from '@/components/UserNotification.vue';
+import students from '@/components/students.vue';
   // Correct the name if needed
 
 
@@ -37,7 +39,9 @@ const routes = [
   { path: '/Moodlogs', component: MoodLogs, name: MoodLogs},
   { path: '/EventCalendar', component: EventCalendar, name: EventCalendar},
   { path: '/Navbar', component: Navbar, name: Navbar},
+  { path: '/RegisterPage', component: RegisterPage, name: RegisterPage},
   { path: '/UserNotification', component: UserNotification, name: UserNotification},
+  // { path: '/studentdashboard', component: studentsdashboard, name: studentsdashboard},
   
 ];
 
