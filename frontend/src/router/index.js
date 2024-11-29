@@ -15,7 +15,7 @@ import CounselingApp from '@/components/CounselingPage.vue';
 import MoodLogs from '@/components/MoodLogs.vue';
 import EventCalendar from '@/components/EventCalendar.vue';
 import Navbar from '@/components/Navbar.vue';
-import TeacherDashboard from '@/components/TeacherDashboard.vue';
+// import RegisterPage from '@/components/RegisterPage.vue';
 import UserNotification from '@/components/UserNotification.vue';
 import students from '@/components/students.vue';
 import community from '@/components/CommunityPage.vue';
@@ -40,7 +40,7 @@ const routes = [
   { path: '/Moodlogs', component: MoodLogs, name: MoodLogs},
   { path: '/EventCalendar', component: EventCalendar, name: EventCalendar},
   { path: '/Navbar', component: Navbar, name: Navbar},
-  { path: '/TeacherDashboard', component: TeacherDashboard, name: TeacherDashboard},
+  // { path: '/RegisterPage', component: RegisterPage, name: RegisterPage},
   { path: '/UserNotification', component: UserNotification, name: UserNotification},
   { path: '/community', component: community, name: community},
   // { path: '/studentdashboard', component: studentsdashboard, name: studentsdashboard},
