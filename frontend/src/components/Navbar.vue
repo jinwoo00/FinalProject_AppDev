@@ -269,14 +269,227 @@ export default {
 </script>
 
 <style scoped>
+.border-b {
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bg-white {
+  background: linear-gradient(to right, #ffffff, #f3f4f6);
+}
+
+.max-w-7xl {
+  max-width: 1280px;
+}
+
+.h-12 {
+  height: 3.5rem;
+}
+
+.flex-shrink-0 img {
+  transition: transform 0.3s ease;
+}
+
+.flex-shrink-0 img:hover {
+  transform: scale(1.1);
+}
+
+.text-gray-500 {
+  color: #4b5563;
+}
+
+.text-gray-900 {
+  color: #111827;
+}
+
+.hover\:text-gray-900:hover {
+  color: #1f2937;
+}
+
+.px-3 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-2 {
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+.relative::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #6366f1;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.relative:hover::after {
+  transform: scaleX(1);
+}
+
+.bg-gray-100 {
+  background-color: rgba(243, 244, 246, 0.7);
+}
+
+.text-gray-400 {
+  color: #9ca3af;
+}
+
+.hover\:text-gray-500:hover {
+  color: #6b7280;
+}
+
+.h-6 {
+  height: 1.6rem;
+}
+
+.w-6 {
+  width: 1.6rem;
+}
+
+.rounded-full {
+  border-radius: 9999px;
+}
+
+.ring-1 {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.ring-black {
+  --tw-ring-color: rgba(0, 0, 0, 0.1);
+}
+
+.ring-opacity-5 {
+  --tw-ring-opacity: 0.05;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.transition-transform {
+  transition-property: transform;
+}
+
+.duration-200 {
+  transition-duration: 200ms;
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 768px) {
+  .md\:block {
+    display: block;
+  }
+
+  .md\:hidden {
+    display: none;
+  }
+}
+
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-  transform: translateY(-5px);
 }
+
+/* Mobile menu styles */
+.md\:hidden .px-2 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.md\:hidden .pt-2 {
+  padding-top: 0.75rem;
+}
+
+.md\:hidden .pb-3 {
+  padding-bottom: 1rem;
+}
+
+.md\:hidden .space-y-1 > * + * {
+  margin-top: 0.5rem;
+}
+
+.md\:hidden .hover\:bg-gray-100:hover {
+  background-color: rgba(243, 244, 246, 0.8);
+}
+
+/* Dropdown menu styles */
+.py-1 > * {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.hover\:bg-gray-100:hover {
+  background-color: rgba(243, 244, 246, 0.8);
+}
+/* Enhanced Logo Styles */
+.flex-shrink-0 {
+  display: flex;
+  align-items: center;
+}
+
+.flex-shrink-0 img {
+  height: 3rem; /* Increased size */
+  width: auto;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.flex-shrink-0 img:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4)); /* Adds a subtle glow effect on hover */
+}
+
+/* Add a container for the logo and school name */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Style for the school name */
+.school-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4b5563;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; /* Adjust as needed */
+}
+
+@media (max-width: 768px) {
+  .school-name {
+    display: none; /* Hide school name on mobile */
+  }
+}
+
 </style>

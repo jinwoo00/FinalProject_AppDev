@@ -6,14 +6,18 @@
           <img src="@/assets/munhi_logo.png" alt="School Logo" class="logo-img">
           <span class="school-name">NAUJAN MUNICIPAL HIGH-SCHOOL</span>
         </div>
-        <button @click="handleRegisterClick" class="btn-register">Register</button>
+        <div class="button-container">
+          
+        </div>
       </div>
     </nav>
     <div class="register-form-container">
       <div class="card">
         <div class="card-body">
           <h2 class="card-title">Student Registration</h2>
+          <!-- Registration Form -->
           <form @submit.prevent="handleRegister">
+            <!-- Form sections -->
             <!-- General Information -->
             <div class="form-section">
               <h3>General Information</h3>
@@ -96,12 +100,18 @@
                 <input type="password" id="confirmpassword" v-model="confirmpassword" required>
                 <small v-if="showWarnings && password !== confirmpassword" class="text-danger">Passwords do not match.</small>
               </div>
+              
             </div>
           </form>
         </div>
+        <div class="button-container">
+          <button @click="handleRegisterClick" class="btn-register">Register</button>
+        </div>
+      </div>
+    
       </div>
     </div>
-  </div>
+
 </template>
 
 <script>
@@ -195,21 +205,23 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 .register-page {
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #e6f2f8, #ffffff);
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #31511E, #859F3D);
   min-height: 100vh;
-  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
 }
 
 .navbar {
-  background-color: white;
-  padding: 0.5rem 1rem;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 2rem;
 }
 
 .container {
@@ -224,41 +236,22 @@ export default {
 }
 
 .logo-img {
-  width: 50px;
+  width: 90px;
   height: auto;
-  margin-right: 0.5rem;
+  margin-right: 1rem;
 }
 
 .school-name {
-  color: black;
-  font-size: 1rem;
-  font-weight: bold;
+  color: #F6FCDF;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
-.btn-register {
-  background-color: #018749;
-  color: White;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
 
-.register-form-container {
-  padding-top: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 .card {
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
-  margin: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-body {
@@ -266,9 +259,11 @@ export default {
 }
 
 .card-title {
-  color: Green;
+  color: #31511E;
+  font-size: 2rem;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .form-section {
@@ -276,62 +271,93 @@ export default {
 }
 
 .form-section h3 {
-  color: black;
-  margin-bottom: 1rem;
+  color: #1b1c1b;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #859F3D;
+  padding-bottom: 0.5rem;
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 label {
   display: block;
+  color: #151515;
+  font-weight: 500;
   margin-bottom: 0.5rem;
-  color: #333;
 }
 
-input, select {
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="password"],
+select {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.75rem;
+  border: 1px solid #859F3D;
+  border-radius: 5px;
   font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #31511E;
+  box-shadow: 0 0 0 2px rgba(49, 81, 30, 0.1);
 }
 
 .name-inputs {
-  display: flex;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
 
-.name-inputs input {
-  flex: 1;
-}
-
-.contact-details {
-  background-color: #f0f8ff;
-  padding: 1rem;
-  border-radius: 10px;
-}
 .text-danger {
-  color: #dc3545;
-  font-size: 0.875rem;
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  background-color: #31511E;
+  border-radius: 2px;
+}
+
+.btn-register {
+  background-color: #859F3D;
+  color: #F6FCDF;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-register:hover {
+  background-color: #6A7F31;
 }
 
 @media (max-width: 768px) {
-  .school-name {
-    font-size: 0.875rem;
+  .name-inputs {
+    grid-template-columns: 1fr;
   }
 
   .card-body {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
-  .name-inputs {
-    flex-direction: column;
-  }
-
-  .name-inputs input {
-    margin-bottom: 0.5rem;
+  .card-title {
+    font-size: 1.75rem;
   }
 }
 </style>
