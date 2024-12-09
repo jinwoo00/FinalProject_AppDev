@@ -1,6 +1,14 @@
 <template>
-  <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">{{ communityName }}</h1>
+  <div class="container mx-auto p-4 relative">
+    <!-- Back Button -->
+    <button @click="goBack" class="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back
+    </button>
+
+    <h1 class="text-3xl font-bold mb-6 mt-16">{{ communityName }}</h1>
 
     <!-- New Post Form -->
     <div class="mb-8 bg-white p-4 rounded shadow">
@@ -15,18 +23,24 @@
     <!-- Posts List -->
     <div>
       <h2 class="text-2xl font-semibold mb-4">Recent Posts</h2>
-      <div v-for="post in sortedPosts" :key="post.id" class="bg-white p-4 rounded shadow mb-4">
-        <h3 class="text-xl font-semibold">{{ post.title }}</h3>
+      <div v-for="post in sortedPosts" :key="post.id" 
+           :class="['p-4 rounded shadow mb-4', post.isAdminPost ? 'bg-yellow-50 border-2 border-yellow-200' : 'bg-blue-50 border-2 border-blue-200']">
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="text-xl font-semibold">{{ post.title }}</h3>
+          <span v-if="post.isAdminPost" class="bg-yellow-200 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Admin Post</span>
+          <span v-else class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">User Post</span>
+        </div>
         <p class="text-gray-600 mb-2">{{ post.content }}</p>
         <div class="flex items-center text-sm text-gray-500">
-          <span class="mr-4">By: {{ post.author }}</span>
+          <span class="mr-4" :class="post.isAdminPost ? 'font-semibold text-yellow-700' : 'font-semibold text-blue-700'">
+            By: {{ post.author }}
+          </span>
           <span>Posted on: {{ formatDate(post.date) }}</span>
         </div>
         <div class="mt-2 flex items-center">
           <button @click="upvotePost(post.id)" class="text-blue-500 hover:text-blue-700 mr-4">
             Upvote ({{ post.upvotes }})
           </button>
-          <span v-if="post.isAdminPost" class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">Admin Post</span>
           <template v-if="isAdmin">
             <button @click="editPost(post)" class="text-green-500 hover:text-green-700 mr-4">
               Edit
@@ -35,6 +49,25 @@
               Delete
             </button>
           </template>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="mt-4">
+          <h4 class="text-lg font-semibold mb-2">Comments</h4>
+          <div v-for="comment in post.comments" :key="comment.id" 
+               :class="['p-2 rounded mb-2', comment.isAdminComment ? 'bg-yellow-100' : 'bg-blue-100']">
+            <p class="text-sm">{{ comment.content }}</p>
+            <p class="text-xs" :class="comment.isAdminComment ? 'text-yellow-700' : 'text-blue-700'">
+              By: {{ comment.author }} on {{ formatDate(comment.date) }}
+              <span v-if="comment.isAdminComment" class="ml-2 bg-yellow-200 text-yellow-800 text-xs font-medium px-1 py-0.5 rounded">Admin</span>
+              <span v-else class="ml-2 bg-blue-200 text-blue-800 text-xs font-medium px-1 py-0.5 rounded">User</span>
+            </p>
+          </div>
+          <!-- New Comment Form -->
+          <form @submit.prevent="addComment(post.id)" class="mt-2">
+            <textarea v-model="newComments[post.id]" placeholder="Add a comment" class="w-full p-2 border rounded" rows="2" required></textarea>
+            <button type="submit" class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Add Comment</button>
+          </form>
         </div>
       </div>
     </div>
@@ -58,10 +91,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, limit } from 'firebase/firestore'
+import { useRouter } from 'vue-router'
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, limit, arrayUnion } from 'firebase/firestore'
 
+const router = useRouter()
 const db = getFirestore()
-const communityName = ref('Tech Talk Community')
+const communityName = ref('Munhi Community')
 const posts = ref([])
 const newPost = ref({
   title: '',
@@ -69,8 +104,9 @@ const newPost = ref({
 })
 const showEditModal = ref(false)
 const editingPost = ref(null)
+const newComments = ref({})
 
-const isAdmin = ref(true) // This should be set based on the user's role
+const isAdmin = ref(false) // Set to false for user view
 
 const sortedPosts = computed(() => {
   return [...posts.value].sort((a, b) => b.date - a.date)
@@ -80,7 +116,7 @@ const fetchPosts = async () => {
   const postsCollection = collection(db, 'communityPosts')
   const postsQuery = query(postsCollection, orderBy('date', 'desc'), limit(20))
   const postSnapshot = await getDocs(postsQuery)
-  posts.value = postSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+  posts.value = postSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), comments: doc.data().comments || [] }))
 }
 
 const createPost = async () => {
@@ -90,7 +126,8 @@ const createPost = async () => {
     author: isAdmin.value ? 'Admin' : 'User',
     date: new Date(),
     upvotes: 0,
-    isAdminPost: isAdmin.value
+    isAdminPost: isAdmin.value,
+    comments: []
   }
   
   const docRef = await addDoc(collection(db, 'communityPosts'), post)
@@ -133,12 +170,38 @@ const deletePost = async (postId) => {
   }
 }
 
+const addComment = async (postId) => {
+  const comment = {
+    id: Date.now().toString(),
+    content: newComments.value[postId],
+    author: isAdmin.value ? 'Admin' : 'User',
+    date: new Date(),
+    isAdminComment: isAdmin.value
+  }
+
+  const postRef = doc(db, 'communityPosts', postId)
+  await updateDoc(postRef, {
+    comments: arrayUnion(comment)
+  })
+
+  const postIndex = posts.value.findIndex(p => p.id === postId)
+  if (postIndex !== -1) {
+    posts.value[postIndex].comments.push(comment)
+  }
+
+  newComments.value[postId] = ''
+}
+
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   })
+}
+
+const goBack = () => {
+  router.push('/students') // Assuming the user page route is '/user'
 }
 
 onMounted(() => {
