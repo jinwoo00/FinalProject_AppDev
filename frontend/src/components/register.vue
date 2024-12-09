@@ -6,9 +6,6 @@
           <img src="@/assets/munhi_logo.png" alt="School Logo" class="logo-img">
           <span class="school-name">NAUJAN MUNICIPAL HIGH-SCHOOL</span>
         </div>
-        <div class="button-container">
-          
-        </div>
       </div>
     </nav>
     <div class="register-form-container">

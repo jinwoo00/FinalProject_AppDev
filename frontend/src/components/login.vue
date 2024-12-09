@@ -16,12 +16,31 @@
             <label for="password">Password</label>
             <div class="input-icon">
               <i class="fas fa-lock"></i>
-              <input type="password" id="password" v-model="password" placeholder="Enter your password" required />
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                id="password"
+                v-model="password"
+                placeholder="Enter your password"
+                required
+              />
+              <button
+                type="button"
+                @click="togglePasswordVisibility"
+                class="password-toggle"
+              >
+                <EyeIcon v-if="!showPassword" />
+                <EyeOffIcon v-if="showPassword" />
+              </button>
             </div>
           </div>
           <div class="button-group">
-            <button type="submit" class="login-button">
-              <i class="fas fa-sign-in-alt"></i> Login
+            <button type="submit" class="login-button" :disabled="isLoading">
+              <template v-if="isLoading">
+                <span class="spinner"></span>
+              </template>
+              <template v-else>
+                <i class="fas fa-sign-in-alt"></i> Login
+              </template>
             </button>
             <button type="button" class="register-button" @click="handleRegister">
               <i class="fas fa-user-plus"></i> Register
@@ -67,9 +86,14 @@
 import { auth, db } from '../firebaseConfig';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+import { EyeIcon, EyeOffIcon } from 'lucide-vue-next';
 
 export default {
   name: 'LoginPage',
+  components: {
+    EyeIcon,
+    EyeOffIcon,
+  },
   data() {
     return {
       email: '',
@@ -78,10 +102,13 @@ export default {
       showResetModal: false,
       resetEmail: '',
       resetMessage: null,
+      isLoading: false,
+      showPassword: false,
     };
   },
   methods: {
     async handleLogin() {
+      this.isLoading = true;
       try {
         const userCredential = await signInWithEmailAndPassword(auth, this.email, this.password);
         const user = userCredential.user;
@@ -104,6 +131,8 @@ export default {
         }
       } catch (error) {
         this.loginError = error.message || 'Invalid email or password.';
+      } finally {
+        this.isLoading = false;
       }
     },
     handleRegister() {
@@ -124,6 +153,9 @@ export default {
       } catch (error) {
         this.resetMessage = error.message || 'Failed to send reset email.';
       }
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     },
   },
 };
@@ -155,8 +187,6 @@ export default {
   background-size: cover;
 }
 
-
-
 #login-page::before {
   content: '';
   position: absolute;
@@ -176,8 +206,9 @@ main {
 }
 
 .login-container {
-  background-color:#ffffffc3;
-  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.95); /* Increased opacity for a more solid white background */
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
   padding: 2.5rem;
   box-shadow: var(--shadow-lg);
   animation: fadeInUp 0.5s ease-out;
@@ -231,6 +262,9 @@ label {
 
 .input-icon {
   position: relative;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .input-icon i {
@@ -238,28 +272,23 @@ label {
   top: 50%;
   left: 1rem;
   transform: translateY(-50%);
-  color: var(--color-olive);
+  color: #004f27;
   transition: var(--transition);
 }
 
 .input-icon input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
-  border: 2px solid var(--color-olive);
-  border-radius: 10px;
+  padding: 0.875rem 2.5rem;
+  border: none;
+  border-radius: 8px;
   font-size: 1rem;
   transition: var(--transition);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: transparent;
 }
 
 .input-icon input:focus {
   outline: none;
-  border-color: var(--color-forest);
-  box-shadow: 0 0 0 3px rgba(49, 81, 30, 0.2);
-}
-
-.input-icon input:focus + i {
-  color: var(--color-forest);
+  box-shadow: 0 0 0 2px #004f27;
 }
 
 .button-group {
@@ -328,7 +357,7 @@ label {
 .reset-password-button {
   background: none;
   border: none;
-  color: var(--color-forest);
+  color: #3e5630;
   font-size: 0.9rem;
   margin: 1rem auto 0;
   cursor: pointer;
@@ -338,7 +367,7 @@ label {
 }
 
 .reset-password-button:hover {
-  color: var(--color-olive);
+  color: #77bf4a;
   text-decoration: underline;
 }
 
@@ -366,7 +395,7 @@ label {
 }
 
 .modal-content {
-  background-color: var(--color-cream);
+  background-color: #ffffff;
   border-radius: 20px;
   padding: 2rem;
   width: 90%;
@@ -412,7 +441,7 @@ label {
 }
 
 .btn-primary {
-  background-color: var(--color-forest);
+  background-color: green;
   color: var(--color-cream);
   border: none;
   padding: 0.75rem 1rem;
@@ -429,7 +458,7 @@ label {
 }
 
 .btn-primary:hover {
-  background-color: #2a4619;
+  background-color: #77bf4a;
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
@@ -449,6 +478,50 @@ label {
 
 .message i {
   margin-right: 0.5rem;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #004f27;
+  transition: var(--transition);
+}
+
+.password-toggle:hover {
+  color: var(--color-forest);
+}
+
+.password-toggle:focus {
+  outline: none;
+}
+
+.input-icon i,
+.password-toggle {
+  color: #004f27;
 }
 
 @media (max-width: 480px) {
