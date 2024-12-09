@@ -197,7 +197,7 @@
             </div>
             <div v-else-if="activeTab === 'community'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
               <!-- <h2 class="text-xl font-semibold mb-4">TechTalk Community Management</h2> -->
-              <CommunityPage />
+              <CommunityPage :isAdmin="true" />
             </div>
           </div>
         </div>
