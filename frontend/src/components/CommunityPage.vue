@@ -1,87 +1,92 @@
 <template>
-  <div class="container mx-auto p-4 relative">
-    <!-- Back Button -->
-    <button @click="goBack" class="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-      </svg>
-      Back
-    </button>
+  <div class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <header class="bg-blue-700 text-white py-4">
+      <div class="container mx-auto px-4 flex justify-between items-center">
+        <button @click="goBack" class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
+          Back to Students
+        </button>
+        <h1 class="text-2xl font-bold">{{ communityName }}</h1>
+      </div>
+    </header>
 
-    <h1 class="text-3xl font-bold mb-6 mt-16">{{ communityName }}</h1>
-
-    <!-- New Post Form -->
-    <div class="mb-8 bg-white p-4 rounded shadow">
-      <h2 class="text-xl font-semibold mb-4">Create New Post</h2>
-      <form @submit.prevent="createPost">
-        <input v-model="newPost.title" placeholder="Post Title" class="w-full p-2 mb-2 border rounded" required>
-        <textarea v-model="newPost.content" placeholder="Post Content" class="w-full p-2 mb-2 border rounded" rows="3" required></textarea>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit Post</button>
-      </form>
-    </div>
-
-    <!-- Posts List -->
-    <div>
-      <h2 class="text-2xl font-semibold mb-4">Recent Posts</h2>
-      <div v-for="post in sortedPosts" :key="post.id" 
-           :class="['p-4 rounded shadow mb-4', post.isAdminPost ? 'bg-yellow-50 border-2 border-yellow-200' : 'bg-blue-50 border-2 border-blue-200']">
-        <div class="flex justify-between items-center mb-2">
-          <h3 class="text-xl font-semibold">{{ post.title }}</h3>
-          <span v-if="post.isAdminPost" class="bg-yellow-200 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Admin Post</span>
-          <span v-else class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">User Post</span>
-        </div>
-        <p class="text-gray-600 mb-2">{{ post.content }}</p>
-        <div class="flex items-center text-sm text-gray-500">
-          <span class="mr-4" :class="post.isAdminPost ? 'font-semibold text-yellow-700' : 'font-semibold text-blue-700'">
-            By: {{ post.author }}
-          </span>
-          <span>Posted on: {{ formatDate(post.date) }}</span>
-        </div>
-        <div class="mt-2 flex items-center">
-          <button @click="upvotePost(post.id)" class="text-blue-500 hover:text-blue-700 mr-4">
-            Upvote ({{ post.upvotes }})
+    <div class="container mx-auto px-4 py-8">
+      <!-- New Post Form -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Create New Post</h2>
+        <form @submit.prevent="createPost">
+          <input v-model="newPost.title" placeholder="Post Title" class="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          <textarea v-model="newPost.content" placeholder="Post Content" class="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" required></textarea>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
+            Submit Post
           </button>
-          <template v-if="isAdmin">
-            <button @click="editPost(post)" class="text-green-500 hover:text-green-700 mr-4">
-              Edit
-            </button>
-            <button @click="deletePost(post.id)" class="text-red-500 hover:text-red-700">
-              Delete
-            </button>
-          </template>
-        </div>
+        </form>
+      </div>
 
-        <!-- Comments Section -->
-        <div class="mt-4">
-          <h4 class="text-lg font-semibold mb-2">Comments</h4>
-          <div v-for="comment in post.comments" :key="comment.id" 
-               :class="['p-2 rounded mb-2', comment.isAdminComment ? 'bg-yellow-100' : 'bg-blue-100']">
-            <p class="text-sm">{{ comment.content }}</p>
-            <p class="text-xs" :class="comment.isAdminComment ? 'text-yellow-700' : 'text-blue-700'">
-              By: {{ comment.author }} on {{ formatDate(comment.date) }}
-              <span v-if="comment.isAdminComment" class="ml-2 bg-yellow-200 text-yellow-800 text-xs font-medium px-1 py-0.5 rounded">Admin</span>
-              <span v-else class="ml-2 bg-blue-200 text-blue-800 text-xs font-medium px-1 py-0.5 rounded">User</span>
-            </p>
+      <!-- Posts List -->
+      <div class="space-y-6">
+        <div v-for="post in sortedPosts" :key="post.id" class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-semibold text-gray-800">{{ post.title }}</h3>
+              <span v-if="post.isAdminPost" class="bg-yellow-200 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded-full">Admin Post</span>
+              <span v-else class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">User Post</span>
+            </div>
+            <p class="text-gray-600 mb-4">{{ post.content }}</p>
+            <div class="flex items-center text-sm text-gray-500 mb-4">
+              <span class="mr-4" :class="post.isAdminPost ? 'font-semibold text-yellow-700' : 'font-semibold text-blue-700'">
+                By: {{ post.author }}
+              </span>
+              <span>Posted on: {{ formatDate(post.date) }}</span>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button @click="upvotePost(post.id)" class="flex items-center text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                Upvote ({{ post.upvotes }})
+              </button>
+              <template v-if="isAdmin">
+                <button @click="editPost(post)" class="text-green-600 hover:text-green-800 transition duration-300 ease-in-out">Edit</button>
+                <button @click="deletePost(post.id)" class="text-red-600 hover:text-red-800 transition duration-300 ease-in-out">Delete</button>
+              </template>
+            </div>
           </div>
-          <!-- New Comment Form -->
-          <form @submit.prevent="addComment(post.id)" class="mt-2">
-            <textarea v-model="newComments[post.id]" placeholder="Add a comment" class="w-full p-2 border rounded" rows="2" required></textarea>
-            <button type="submit" class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Add Comment</button>
-          </form>
+
+          <!-- Comments Section -->
+          <div class="bg-gray-50 p-6 border-t border-gray-200">
+            <h4 class="text-lg font-semibold mb-4 text-gray-800">Comments</h4>
+            <div v-for="comment in post.comments" :key="comment.id" 
+                 :class="['p-4 rounded-lg mb-4', comment.isAdminComment ? 'bg-yellow-50 border border-yellow-200' : 'bg-blue-50 border border-blue-200']">
+              <p class="text-gray-800 mb-2">{{ comment.content }}</p>
+              <p class="text-xs" :class="comment.isAdminComment ? 'text-yellow-700' : 'text-blue-700'">
+                By: {{ comment.author }} on {{ formatDate(comment.date) }}
+                <span v-if="comment.isAdminComment" class="ml-2 bg-yellow-200 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded-full">Admin</span>
+                <span v-else class="ml-2 bg-blue-200 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full">User</span>
+              </p>
+            </div>
+            <!-- New Comment Form -->
+            <form @submit.prevent="addComment(post.id)" class="mt-4">
+              <textarea v-model="newComments[post.id]" placeholder="Add a comment" class="w-full p-3 mb-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2" required></textarea>
+              <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
+                Add Comment
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Edit Post Modal -->
-    <div v-if="showEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <h3 class="text-lg font-semibold mb-4">Edit Post</h3>
+    <div v-if="showEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+      <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+        <h3 class="text-2xl font-semibold mb-6 text-gray-800">Edit Post</h3>
         <form @submit.prevent="updatePost">
-          <input v-model="editingPost.title" placeholder="Post Title" class="w-full p-2 mb-2 border rounded" required>
-          <textarea v-model="editingPost.content" placeholder="Post Content" class="w-full p-2 mb-2 border rounded" rows="3" required></textarea>
-          <div class="flex justify-end">
-            <button type="button" @click="showEditModal = false" class="bg-gray-300 text-black px-4 py-2 rounded mr-2">Cancel</button>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+          <input v-model="editingPost.title" placeholder="Post Title" class="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          <textarea v-model="editingPost.content" placeholder="Post Content" class="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" required></textarea>
+          <div class="flex justify-end space-x-4">
+            <button type="button" @click="showEditModal = false" class="bg-gray-300 text-gray-800 px-6 py-3 rounded-md hover:bg-gray-400 transition duration-300 ease-in-out">Cancel</button>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-300 ease-in-out">Update</button>
           </div>
         </form>
       </div>
@@ -201,7 +206,7 @@ const formatDate = (date) => {
 }
 
 const goBack = () => {
-  router.push('/students') // Assuming the user page route is '/user'
+  router.push('/students')
 }
 
 onMounted(() => {
