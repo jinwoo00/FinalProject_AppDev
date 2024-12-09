@@ -51,7 +51,41 @@
       </header>
       <main>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div class="px-4 py-8 sm:px-0">
+          <!-- User Statistics Cards -->
+          <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+              <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Total Users
+                </dt>
+                <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                  {{ totalUsers }}
+                </dd>
+              </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+              <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Male Users
+                </dt>
+                <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                  {{ maleUsers }}
+                </dd>
+              </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+              <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                  Female Users
+                </dt>
+                <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                  {{ femaleUsers }}
+                </dd>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8">
             <div v-if="activeTab === 'users'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
               <h2 class="text-xl font-semibold mb-4">User Management</h2>
               <div class="mb-4">
@@ -286,6 +320,14 @@
                   <option value="administrator">Administrator</option>
                 </select>
               </div>
+              <div class="mb-4">
+                <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+                <select id="gender" v-model="userForm.gender" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
               <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                 <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm">
                   {{ selectedUser ? 'Update' : 'Add' }}
@@ -303,7 +345,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { getAuth, signOut } from 'firebase/auth'
 import { getFirestore, collection, getDocs, query, orderBy, limit, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import { Chart, registerables } from 'chart.js'
@@ -318,6 +360,8 @@ const db = getFirestore()
 
 const users = ref([])
 const userCounts = ref({ students: 0, counselors: 0, administrators: 0 })
+const maleUsers = ref(0)
+const femaleUsers = ref(0)
 const moodData = ref({
   labels: [],
   datasets: [{
@@ -346,7 +390,8 @@ const appointmentForm = ref({
 const userForm = ref({
   name: '',
   email: '',
-  role: 'student'
+  role: 'student',
+  gender: 'male'
 })
 
 const fetchUsers = async () => {
@@ -358,9 +403,20 @@ const fetchUsers = async () => {
     if (user.role) {
       acc[user.role.toLowerCase()]++
     }
+    if (user.gender) {
+      if (user.gender.toLowerCase() === 'male') {
+        maleUsers.value++
+      } else if (user.gender.toLowerCase() === 'female') {
+        femaleUsers.value++
+      }
+    }
     return acc
   }, { students: 0, counselors: 0, administrators: 0 })
 }
+
+const totalUsers = computed(() => {
+  return users.value.length
+})
 
 const fetchMoodData = async () => {
   const moodLogsCollection = collection(db, 'moodLogs')
@@ -520,7 +576,8 @@ const closeUserModal = () => {
   userForm.value = {
     name: '',
     email: '',
-    role: 'student'
+    role: 'student',
+    gender: 'male'
   }
 }
 
