@@ -26,6 +26,9 @@
               <a @click="activeTab = 'moodLogs'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'moodLogs' }]">
                 Mood Logs
               </a>
+              <a @click="activeTab = 'community'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'community' }]">
+                TechTalk Community
+              </a>
             </div>
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:items-center">
@@ -222,8 +225,13 @@
                     <p class="text-sm text-gray-500">{{ formatDate(log.timestamp) }}</p>
                     <p class="mt-1 text-sm text-gray-900">{{ log.note }}</p>
                   </div>
+                  
                 </li>
               </ul>
+            </div>
+            <div v-else-if="activeTab === 'community'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
+              <!-- <h2 class="text-xl font-semibold mb-4">TechTalk Community Management</h2> -->
+              <CommunityPage />
             </div>
           </div>
         </div>
@@ -343,6 +351,7 @@ import { getFirestore, collection, getDocs, query, orderBy, limit, addDoc, delet
 import { Chart, registerables } from 'chart.js'
 import { Bar } from 'vue-chartjs'
 import { ref as firebaseRef, get, child, getDatabase } from 'firebase/database'
+import CommunityPage from '../CommunityPage.vue'
 
 Chart.register(...registerables)
 
