@@ -98,7 +98,7 @@ header::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('C:/Users/keith/OneDrive/Documents/GitHub/FinalProject_AppDev/frontend/src/assets/schoolmunhi.png');
+  background-image: url('~@/assets/schoolmunhi.png');
   background-position: center;
   background-size: cover;
   filter: blur(1px);

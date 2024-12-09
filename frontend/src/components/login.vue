@@ -2,7 +2,7 @@
   <div id="login-page">
     <main>
       <div class="login-container">
-        <img src="@/assets/munhi_logo.png" alt="School Logo" class="school-logo" />
+        <img src="~@/assets/munhi_logo.png" alt="School Logo" class="school-logo" />
         <h2 class="welcome-text">Welcome Back!</h2>
         <form @submit.prevent="handleLogin">
           <div class="form-group">
@@ -143,7 +143,7 @@ export default {
 
 #login-page {
   min-height: 100vh;
-  background-image: url('C:\Users\keith\OneDrive\Documents\GitHub\FinalProject_AppDev\frontend\src\assets\schoolmunhi.png');
+  background-image: url('@/assets/schoolmunhi.png');
   background-position: center;
   display: flex;
   justify-content: center;
