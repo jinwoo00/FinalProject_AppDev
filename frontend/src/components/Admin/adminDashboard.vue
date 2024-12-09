@@ -17,12 +17,6 @@
               <a @click="activeTab = 'analytics'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'analytics' }]">
                 Analytics
               </a>
-              <a @click="activeTab = 'settings'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'settings' }]">
-                Settings
-              </a>
-              <a @click="activeTab = 'snippet'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'snippet' }]">
-                Snippet
-              </a>
               <a @click="activeTab = 'moodLogs'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'moodLogs' }]">
                 Mood Logs
               </a>
@@ -185,28 +179,6 @@
                   <p>Placeholder for system usage statistics</p>
                 </div>
               </div>
-            </div>
-            <div v-else-if="activeTab === 'settings'" class="border-4 border-dashed border-gray-200 rounded-lg h-96">
-              <h2 class="text-xl font-semibold mb-4">System Settings</h2>
-              <form class="space-y-4">
-                <div>
-                  <label for="chatbot-threshold" class="block text-sm font-medium text-gray-700">Chatbot Escalation Threshold</label>
-                  <input type="number" name="chatbot-threshold" id="chatbot-threshold" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="3">
-                </div>
-                <div>
-                  <label for="session-timeout" class="block text-sm font-medium text-gray-700">Session Timeout (minutes)</label>
-                  <input type="number" name="session-timeout" id="session-timeout" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="30">
-                </div>
-                <div>
-                  <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Save Settings
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div v-else-if="activeTab === 'snippet'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
-              <h2 class="text-xl font-semibold mb-4">Snippet Content</h2>
-              <pre class="whitespace-pre-wrap">{{ snippetContent }}</pre>
             </div>
             <div v-else-if="activeTab === 'moodLogs'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
               <h2 class="text-xl font-semibold mb-4">Student Mood Logs</h2>

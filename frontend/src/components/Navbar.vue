@@ -112,7 +112,7 @@
                 <div class="py-1">
                   <router-link to="/UserProf" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Your Profile</router-link>
                   <router-link to="/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Settings</router-link>
-                  <router-link to="/help-support" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Help & Support</router-link>
+                  <router-link to="/Help_Support" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Help & Support</router-link>
                   <a href="#" @click.prevent="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">Sign out</a>
                 </div>
               </div>

@@ -20,6 +20,7 @@ import UserNotification from '@/components/UserNotification.vue';
 import students from '@/components/students.vue';
 import community from '@/components/CommunityPage.vue';
 import Navbar from '@/components/Navbar.vue';
+import Help_Support from '@/components/Help_Support.vue';
 // import Sidebar from '@/components/Sidebar.vue';
   // Correct the name if needed
 
@@ -46,6 +47,7 @@ const routes = [
   { path: '/UserNotification', component: UserNotification, name: UserNotification},
   { path: '/community', component: community, name: community},
   // { path: '/studentdashboard', component: studentsdashboard, name: studentsdashboard},
+  { path: '/Help_Support', component: Help_Support, name: Help_Support},
   
 ];
 
