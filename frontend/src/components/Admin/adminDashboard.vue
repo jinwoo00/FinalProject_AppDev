@@ -45,8 +45,8 @@
       </header>
       <main>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <!-- User Statistics Cards - Only visible in the users tab -->
-          <div v-if="activeTab === 'users'" class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <!-- User Statistics Cards -->
+          <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
             <div class="bg-white overflow-hidden shadow rounded-lg">
               <div class="px-4 py-5 sm:p-6">
                 <dt class="text-sm font-medium text-gray-500 truncate">
@@ -78,7 +78,6 @@
               </div>
             </div>
           </div>
-
 
           <div class="mt-8">
             <div v-if="activeTab === 'users'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
@@ -203,7 +202,7 @@
               </ul>
             </div>
             <div v-else-if="activeTab === 'community'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
-              <!-- <h2 class="text-xl font-semibold mb-4">TechTalk Community Management</h2> -->
+             
               <CommunityPage :isAdmin="true" />
             </div>
           </div>
