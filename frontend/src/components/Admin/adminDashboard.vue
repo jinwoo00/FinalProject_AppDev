@@ -20,7 +20,7 @@
               <a @click="activeTab = 'moodLogs'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'moodLogs' }]">
                 Mood Logs
               </a>
-              <a @click="activeTab = 'community'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'community' }]">
+              <a @click="activeTab = 'AdminCommunityManagement'" :class="['border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium', { 'border-indigo-500 text-gray-900': activeTab === 'AdminCommunityManagement' }]">
                 Munhi Community
               </a>
             </div>
@@ -201,7 +201,7 @@
                 </li>
               </ul>
             </div>
-            <div v-else-if="activeTab === 'community'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
+            <div v-else-if="activeTab === 'AdminCommunityManagement'" class="border-4 border-dashed border-gray-200 rounded-lg h-96 overflow-auto">
              
               <CommunityPage :isAdmin="true" />
             </div>
@@ -218,7 +218,7 @@
         <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
       </div>
       <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <div class="inline-block align-bottombg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
             {{ selectedAppointment ? 'Edit Appointment' : 'Add New Appointment' }}
@@ -323,7 +323,7 @@ import { getFirestore, collection, getDocs, query, orderBy, limit, addDoc, delet
 import { Chart, registerables } from 'chart.js'
 import { Bar } from 'vue-chartjs'
 import { ref as firebaseRef, get, child, getDatabase } from 'firebase/database'
-import CommunityPage from '../CommunityPage.vue'
+//import CommunityPage from '../CommunityPage.vue'
 
 Chart.register(...registerables)
 
@@ -443,13 +443,16 @@ const fetchAppointments = async () => {
 }
 
 const handleLogout = async () => {
-  try {
-    await signOut(auth)
-    console.log('User logged out successfully')
-    // You might want to use vue-router to redirect the user
-    // router.push('/login')
-  } catch (error) {
-    console.error('Logout failed', error)
+  if (confirm('Are you sure you want to log out?')) {
+    try {
+      await signOut(auth)
+      console.log('User logged out successfully')
+      // Redirect to login page
+      window.location.href = '/login' // Replace '/login' with your actual login page URL
+    } catch (error) {
+      console.error('Logout failed', error)
+      alert('Logout failed. Please try again.')
+    }
   }
 }
 

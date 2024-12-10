@@ -8,7 +8,7 @@
         </div>
         <div class="footer-contact">
           <h4>Contact Us</h4>
-          <p><MapPinIcon class="icon" /> 123 School St., Naujan, Oriental Mindoro</p>
+          <p><MapPinIcon class="icon" /> Andres Ilagan, Naujan, Oriental Mindoro</p>
           <p><PhoneIcon class="icon" /> (123) 456-7890</p>
           <p><MailIcon class="icon" /> info@naujanhighschool.edu</p>
         </div>
