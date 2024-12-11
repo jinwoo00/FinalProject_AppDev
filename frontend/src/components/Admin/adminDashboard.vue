@@ -26,12 +26,17 @@
             </div>
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:items-center">
-            <button @click="handleLogout" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              <span class="sr-only">Logout</span>
-              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
+            <div class="relative group">
+              <button @click="handleLogout" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span class="sr-only">Logout</span>
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
+              <span class="absolute right-0 top-10 w-max bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Log out
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -499,18 +504,47 @@ const fetchAppointments = async () => {
 }
 
 const handleLogout = async () => {
-  if (confirm('Are you sure you want to log out?')) {
+  const confirmLogout = () => {
+    return new Promise((resolve) => {
+      const modal = document.createElement('div');
+      modal.innerHTML = `
+        <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center" id="logoutModal">
+          <div class="bg-white p-5 rounded-lg shadow-xl">
+            <h2 class="text-xl font-bold mb-4">Confirm Logout</h2>
+            <p class="mb-4">Are you sure you want to log out?</p>
+            <div class="flex justify-end">
+              <button id="cancelLogout" class="mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</button>
+              <button id="confirmLogout" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      document.getElementById('cancelLogout').onclick = () => {
+        document.body.removeChild(modal);
+        resolve(false);
+      };
+
+      document.getElementById('confirmLogout').onclick = () => {
+        document.body.removeChild(modal);
+        resolve(true);
+      };
+    });
+  };
+
+  if (await confirmLogout()) {
     try {
-      await signOut(auth)
-      console.log('User logged out successfully')
+      await signOut(auth);
+      console.log('User logged out successfully');
       // Redirect to login page
-      window.location.href = '/login'
+      window.location.href = '/login';
     } catch (error) {
-      console.error('Logout failed', error)
-      alert('Logout failed. Please try again.')
+      console.error('Logout failed', error);
+      alert('Logout failed. Please try again.');
     }
   }
-}
+};
 
 const getMoodEmoji = (rating) => {
   const emojis = ['😞', '🙁', '😐', '🙂', '😄']
@@ -647,3 +681,4 @@ onMounted(() => {
   color: #2d3748;
 }
 </style>
+
